@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ProductMapper">
+ 	
+ 	
+	<resultMap id="productSelectMap" type="product">
+		<result property="prodNo" 			column="prod_no" 			jdbcType="NUMERIC"/>
+		<result property="prodName"	column="prod_name" 		jdbcType="VARCHAR" />
+		<result property="prodDetail" 	column="prod_detail" 		jdbcType="VARCHAR" />
+		<result property="manuDate" 				column="manufacture_day" 					jdbcType="VARCHAR" />
+		<result property="price" 				column="price" 					jdbcType="NUMERIC" />
+		<result property="fileName" 			column="image_file" 		jdbcType="VARCHAR" />
+		<result property="regDate" 		column="reg_date" 			jdbcType="DATE" />
+		<result property="stockCnt" 		column="stock_cnt" 			jdbcType="NUMERIC" />
+		<result property="proTranCode"	column="tran_status_code"	jdbcType="VARCHAR"/>
+		
+		<result property="cartId"	column="cart_id"	jdbcType="NUMERIC"/>
+		<result property="flag"	column="flag"	jdbcType="VARCHAR"/>
+		
+		
+		
+	</resultMap>
+	
+	
+	
+	
+	<!-- SQL : INSERT -->
+	<insert 	id="addProduct"		parameterType="product" >
+	 	INSERT INTO PRODUCT(prod_no, prod_name, prod_detail, manufacture_day, price, image_file, reg_date, stock_cnt) VALUES (seq_product_prod_no.NEXTVAL,#{prodName},#{prodDetail},#{manuDate},#{price},#{fileName},SYSDATE,1)	 </insert>
+	 
+	 <!-- SQL : SELECT ONE -->
+	 <select 	id="getProduct"	parameterType="int"	resultMap="productSelectMap">
+	 SELECT 
+	 PROD_NO, PROD_NAME, PROD_DETAIL, MANUFACTURE_DAY, PRICE, IMAGE_FILE, REG_DATE, STOCK_CNT
+	 FROM product 
+	 WHERE prod_no=#{value}
+	 </select>
+	 
+	 <select 	id="getProduct2"	parameterType="string"	resultMap="productSelectMap">
+	 SELECT 
+	 PROD_NO, PROD_NAME 
+	 FROM product 
+	 WHERE prod_name=#{value}
+	 </select>
+	 
+	
+	
+	
+	
+	
+	 <!-- SQL : UPDATE -->
+	 <update	id="updateProduct"	parameterType="product" >
+	   	UPDATE product 
+	   	<set>
+	   		prod_name 	= #{prodName} ,
+			prod_detail	= #{prodDetail},
+			manufacture_day = #{manuDate} ,
+			price	= #{price} ,
+			image_file	= #{fileName} ,
+			stock_cnt	= #{stockCnt}
+	   	</set>
+	   	WHERE prod_no = #{prodNo}
+	 </update>
+		 
+	<!-- SQL : SELECT LIST -->
+	<select  id="getProductList"  parameterType="search"	resultMap="productSelectMap">
+	  	SELECT *
+	  	FROM (	SELECT inner_table.* , ROWNUM AS row_seq
+	  					FROM		(	SELECT p.PROD_NO, p.PROD_NAME, p.PROD_DETAIL, p.MANUFACTURE_DAY, p.PRICE, p.IMAGE_FILE, p.REG_DATE, p.stock_cnt 
+											FROM PRODUCT p  
+											<if test="searchCondition != null">
+												
+													<if test="searchCondition == 0 and searchKeyword !='' ">
+										 				WHERE p.PROD_NO LIKE '%'||#{searchKeyword}||'%'  
+													</if>
+													<if test="searchCondition == 1 and searchKeyword !='' ">
+										 				WHERE p.PROD_NAME LIKE '%'||#{searchKeyword}||'%'  
+													</if>
+													<if test="searchCondition == 2 and searchKeyword !='' ">
+										 				WHERE p.PRICE LIKE '%'||#{searchKeyword}||'%'  
+													</if>
+												
+											
+											</if>
+											
+											
+											ORDER BY ${orderColurm} ) inner_table
+						WHERE ROWNUM &lt;= #{endRowNum} )
+		WHERE row_seq BETWEEN #{startRowNum} AND #{endRowNum} 
+	 </select>
+	 	<!--  
+	 	
+	 	#{orderColurm}  #{orderKey}
+	 	이거 어떻게 넣으면 될지 고민해보기.
+	 	
+	 	
+	 	
+	 	위 두번째 subQuery 의  
+	 			WHERE ROWNUM &lt;= #{endRowNum} ) 는
+	 			WHERE ROWNUM <= #{endRowNum} ) 의미이며..
+	 			< 는 keyword 로 &lt; 를	사용.
+	 			
+	 			<![CDATA[  ~~~  ]]> 를 이용하여 아래와 같이 사용  할 수 있다.
+	 			CDATA ==> Character Data 의 의미 Java 에서 \n 같은 특수문자 처리  
+
+				WHERE ROWNUM <![CDATA[ <=]]> #{endRowNum} )
+		-->
+	
+	
+	
+
+	
+	
+	
+	<!-- SQL : SELECT ROW Count -->	 
+	 <select  id="getTotalCount"  parameterType="search"	 resultType="int">
+	  	SELECT COUNT(*)
+	  	FROM(	SELECT prod_no, prod_name, price 
+						FROM product 
+						<if test="searchCondition != null">
+							<where>												
+													<if test="searchCondition == 0 and searchKeyword !='' ">
+										 				AND PROD_NO LIKE '%'||#{searchKeyword}||'%' 
+													</if>
+													<if test="searchCondition == 1 and searchKeyword !='' ">
+										 				AND PROD_NAME LIKE '%'||#{searchKeyword}||'%' 
+													</if>
+													<if test="searchCondition == 2 and searchKeyword !='' ">
+										 				AND PRICE LIKE '%'||#{searchKeyword}||'%' 
+													</if>
+					
+							</where>
+						</if> ) countTable						
+	 </select>
+	
+	
+	
+	
+	<!-- SQL : INSERT -->
+	<insert 	id="addCart"		parameterType="map" >
+	 	INSERT INTO CART(cart_id, user_id, prod_no, flag) VALUES (seq_cart_prod_no.NEXTVAL,#{userId},#{prodNo},'Y')	 
+	 </insert>
+	 	
+	<!-- SQL : SELECT ONE -->
+	 <select 	id="validationCart"	parameterType="map"	resultType="string">
+	 SELECT 
+	 flag  
+	 FROM cart 
+	 WHERE prod_no=#{prodNo} AND user_id=#{userID} AND flag='Y' 
+	 </select>
+	
+	
+
+		
+<select id="getCartList" parameterType="map" resultMap="productSelectMap">
+  		SELECT *
+  		FROM ( SELECT inner_table.*, ROWNUM AS row_seq
+  						FROM ( SELECT c.cart_id, c.prod_no, c.flag, p.prod_name, p.stock_cnt   
+										FROM cart c, product p 
+										WHERE user_id=#{buyerId} AND flag='Y' AND p.prod_no = c.prod_no 
+										ORDER BY cart_id  ) inner_table 
+  						WHERE ROWNUM <![CDATA[<=]]> #{search.currentPage}*#{search.pageSize} )
+  		WHERE row_seq BETWEEN (#{search.currentPage}-1)*#{search.pageSize}+1
+  		AND #{search.currentPage}*#{search.pageSize}
+</select>
+	 
+	 
+	
+	<!-- SQL : UPDATE -->
+	 <update	id="deleteCart"	parameterType="int" >
+	   	UPDATE cart 
+	   	<set>
+	   		flag 	= 'N' 
+	   	</set>
+	   	WHERE cart_id = #{cartId}
+	 </update>
+		 
+	 <!--  SQL AutoComplete -->
+ <select id="getAutoProdName" parameterType="String" resultMap="productSelectMap">
+ select prod_name from product where prod_name like concat('%',concat(UPPER(#{value}),'%')) or prod_name like concat('%',concat(LOWER(#{value}),'%'))
+ </select>
+	 
+</mapper>
