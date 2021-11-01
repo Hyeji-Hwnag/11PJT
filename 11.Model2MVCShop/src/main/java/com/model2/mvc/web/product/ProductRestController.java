@@ -99,6 +99,32 @@ public class ProductRestController {
 	
 	
 	
+	@RequestMapping( value="json/listProduct", method=RequestMethod.POST )
+	public Map listProduct(  HttpServletRequest request, HttpServletResponse response) throws Exception{
+		request.setCharacterEncoding("UTF-8");
+		System.out.println("/product/listProduct : GET11111111111111111");
+		
+		int currentPage = Integer.parseInt(request.getParameter("currentPage"));
+		
+//		String keyword = request.getParameter("keyword");
+	System.out.println("c : "+currentPage);
+		Search search = new Search();
+		search.setCurrentPage(currentPage);
+		search.setPageSize(pageSize);
+		search.setOrderColurm("p.prod_no");
+		search.setSearchCondition(request.getParameter("searchCondition"));
+		search.setSearchKeyword(request.getParameter("searchKeyword"));
+		// Business logic ผ๖วเ
+		Map<String , Object> map=productService.getProductList(search);
+		
+		Page resultPage = new Page( search.getCurrentPage(), ((Integer)map.get("totalCount")).intValue(), pageUnit, pageSize);
+		System.out.println(resultPage);
+		map.put("resultPage", resultPage);
+		map.put("search", search);
+		
+		return map;
+	}
+	
 	
 	
 	@RequestMapping( value="json/addProduct", method=RequestMethod.POST )

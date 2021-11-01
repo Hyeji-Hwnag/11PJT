@@ -168,7 +168,8 @@ public class ProductController {
 		product.setManuDate(manuDate);
 		System.out.println("1");
 		
-		String temDir = "E:\\workspace_hhj\\11.Model2MVCShop\\src\\main\\webapp\\images\\uploadFiles\\";
+		//String temDir = "E:\\workspace_hhj\\11.Model2MVCShop\\src\\main\\webapp\\images\\uploadFiles\\";
+		String temDir = "C:\\Users\\HHJ\\git\\repository\\11.Model2MVCShop\\src\\main\\webapp\\images\\uploadFiles\\";
 		
 		
 		

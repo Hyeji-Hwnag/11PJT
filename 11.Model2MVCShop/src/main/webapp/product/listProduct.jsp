@@ -65,10 +65,7 @@ function fncGetUserList(currentPage) {
 	$("#currentPage").val(currentPage)
 	var menu = $("input[name='menu']").val()
 	
-   	//document.detailForm.submit();
-	
-		//$("form").attr("method" , "POST").attr("action" , "/product/listProduct?menu="+menu).submit();
-	$("form").attr("method" , "POST").attr("action" , "/product/listProduct").submit();
+   	$("form").attr("method" , "POST").attr("action" , "/product/listProduct").submit();
 } 
 
 function fncGetOrderList(currentPage, orderColurm){
@@ -84,6 +81,8 @@ function fncGetOrderList(currentPage, orderColurm){
 
 
 $(function() {
+	
+
 
 	 $( "td.ct_btn01:contains('검색')" ).on("click" , function() {
 		 fncGetUserList('1');
@@ -122,19 +121,26 @@ $(function() {
 	
 
 	
-	$("a:contains('상세정보')").on("click" , function() {
+	/* $("a:contains('상세정보')").on("click" , function() {
+		var prodNo = $(this).parent().find("input[name='prodNo']").val();
+		self.location ="/product/getProduct?menu=search&prodNo="+prodNo;
+	});  */
+	
+	$("body").on("click", ".detail_btn1", function() {
 		var prodNo = $(this).parent().find("input[name='prodNo']").val();
 		self.location ="/product/getProduct?menu=search&prodNo="+prodNo;
 	}); 
 	
 	
-	$("a:contains('상품수정')").on("click" , function() {
+	//$("a:contains('상품수정')").on("click" , function() {
+	$("body").on("click", ".detail_btn2", function() {
 		var prodNo = $(this).parent().find("input[name='prodNo']").val();
 		self.location ="/product/getProduct?menu=manage&prodNo="+prodNo;
 	}); 
 	
 	
-	$("a:contains('판매관리')").on("click" , function() {
+	//$("a:contains('판매관리')").on("click" , function() {
+	$("body").on("click", ".detail_btn3", function() {
 		var prodNo = $(this).parent().find("input[name='prodNo']").val();
 		popWin 
 		= window.open("/purchase/checkProductTranCode?prodNo="+prodNo,
@@ -144,7 +150,8 @@ $(function() {
 	}); 
 	
 	
-	$("a:contains('장바구니')").on("click" , function() {
+	//$("a:contains('장바구니')").on("click" , function() {
+	$("body").on("click", ".detail_btn4", function() {
 		var prodNo = $(this).parent().find("input[name='prodNo']").val();
 		var userId = $(this).parent().find("input[name='userId']").val();
 		
@@ -152,8 +159,8 @@ $(function() {
 	}); 
 	
 	
-	$("a:contains('구매')").on("click" , function() {
-		
+	//$("a:contains('구매')").on("click" , function() {
+	$("body").on("click", ".detail_btn5", function() {	
 		var prodNo = $(this).parent().find("input[name='prodNo']").val();
 		var stockCnt=$(this).parent().find("input[name='stockCnt']").val();
 		
@@ -216,6 +223,7 @@ $(function() {
 				},
 
 				error : function(data) {
+	
 
 					alert("에러가 발생하였습니다.")
 
@@ -225,11 +233,105 @@ $(function() {
 		}
 	});
 	
- 
 	
-	
-	
+
 });
+
+
+ 
+ 
+ 
+var page=2;
+$(window).scroll(function() {
+	
+    //if ($(window).scrollTop()  == $(document).height() - $(window).height()) {
+	if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+		
+		var userId = $("input[name='userId']").val()
+ 		var menu = $("input[name='menu']").val()
+		
+ 	 $.ajax({
+
+ 	 	url : "/product/json/listProduct",
+ 	 	method : "POST",
+ 	 	dataType : "json",
+ 	 	data : { currentPage : page, 
+ 	 		searchCondition : $("select[name='searchCondition']").val(),
+ 	 		searchKeyword : $("#autoCompl").val()
+ 	 		},
+ 	 	
+ 	 	//contentType:"application/json;charset=UTF-8", 
+ 	 	contentType: "application/x-www-form-urlencoded;", 
+ 	 	success : function(jsonData) {
+ 	 		page++;
+ 	 		var list = jsonData.list;
+ 	 		
+ 	 		for(var i=0; i<list.length; i++){
+ 	 			var div="";
+ 	 			
+ 	 			div += 
+ 	 				"<div class='col-sm-6 col-md-4'>"+
+ 	 				"<div class='thumbnail'>"+
+ 	 			    "<img src='/images/uploadFiles/"+list[i].fileName+"' width='200' height='200' alt='...' />"+
+ 	 			      
+ 	 			      "<div class='caption'>"+
+ 	 			        "<h3>"+list[i].prodName+"</h3>"+
+ 	 			        "<input type='hidden' id='prodNo' name='prodNo' value='"+list[i].prodNo+"'/>"+
+ 	 			        "<p>가격 : "+list[i].price+"원</p>";
+ 	 			if (list[i].stockCnt==0){
+ 	 				div += "<p>재고없음 </p>";
+ 	 			}else if (list[i].stockCnt!=0){
+ 	 				div += "<p>수량: "+list[i].stockCnt+"개</p> ";
+ 	 			}
+ 	 			div += "<p>"+
+ 	 			"<input type='hidden' id='prodNo' name='prodNo' value='"+list[i].prodNo+"'/>"+
+ 	 			"<input type='hidden' id='userId' name='userId' value='"+userId+"'/>"+
+ 	 			"<input type='hidden' id='stockCnt' name='stockCnt' value='"+list[i].stockCnt+"'/>"+
+ 	 			"<a href='#' class='btn btn-default detail_btn1' role='button'>상세정보</a>";
+ 	 			
+ 	 			
+ 	 			if(userId == 'admin' && menu == 'manage'){
+ 	 				div += "<a href='#' class='btn btn-default detail_btn2' role='button'>상품수정</a>"+
+ 	 				"<a href='#' class='btn btn-default detail_btn3' role='button'>판매관리</a>";
+ 	 			}
+ 	 			
+ 	 			if(userId != 'admin' && menu == 'search'){
+ 	 				div += "<a href='#' class='btn btn-default detail_btn4' role='button'>장바구니</a>"+
+ 	 				"<a href='#' class='btn btn-default detail_btn5' role='button'>구매</a>";
+ 	 			}
+ 	 			
+ 	 		
+ 	 			
+ 	 			div +=  "</p> </div> </div> </div>";
+ 	 			$('.row').append(div);
+ 	 		  
+ 	 			
+ 	 		}
+ 	 		
+ 	 		
+ 	 		
+
+ 	 	},
+
+ 	 	error : function() {
+
+ 	 		alert("1에러가 발생하였습니다.")
+
+ 	 	},
+ 	 	
+ 	 });
+      
+      
+      
+    }
+});
+
+
+
+
+
+		
+		
 
 
 </script>
@@ -332,18 +434,18 @@ $(function() {
 		<input type="hidden" id="userId" name="userId" value="${user.userId}"/>
 		<input type="hidden" id="stockCnt" name="stockCnt" value="${product.stockCnt}"/>
 		
-			<a href="#" class="btn btn-default" role="button">상세정보</a>
+			<a href="#" class="btn btn-default detail_btn1" role="button">상세정보</a>
 		
 		
 		
 		<c:if test="${user.userId eq 'admin' && menu eq 'manage'}">
-        <a href="#" class="btn btn-default" role="button">상품수정</a> 
-        <a href="#" class="btn btn-default" role="button">판매관리</a>
+        <a href="#" class="btn btn-default detail_btn2" role="button">상품수정</a> 
+        <a href="#" class="btn btn-default detail_btn3" role="button">판매관리</a>
         </c:if>
         
         <c:if test="${user.role eq 'user' && menu eq 'search'}">
-        <a href="#" class="btn btn-default" role="button">장바구니</a> 
-        <a href="#" class="btn btn-default" role="button">구매</a> 
+        <a href="#" class="btn btn-default detail_btn4" role="button">장바구니</a> 
+        <a href="#" class="btn btn-default detail_btn5" role="button">구매</a> 
         </c:if>
         
         
@@ -358,7 +460,7 @@ $(function() {
 </c:forEach>
 </div>
 
-
+<%-- 
 <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
 	
 	<tr>
@@ -387,8 +489,8 @@ $(function() {
 	<tr class="ct_list_pop">
 		<td align="center">${ i }</td>
 		<td></td>
-		<%-- 21/9/29
-			proTranCode를 보냄 / 구매에서 쓰려고 --%>
+		21/9/29
+			proTranCode를 보냄 / 구매에서 쓰려고
 		<td align="left">
 		<!-- <a href="/product/getProduct?prodNo=${product.prodNo }&menu=${menu}">${product.prodName }</a> -->
 		<input type="hidden" id="prodNo" name="prodNo" value="${product.prodNo}"/>
@@ -427,7 +529,7 @@ $(function() {
 	</c:forEach>
 	
 </table>
-
+ --%>
 <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
 	<tr>
 		<td align="center">

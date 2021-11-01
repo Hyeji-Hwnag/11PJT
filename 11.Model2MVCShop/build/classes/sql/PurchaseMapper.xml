@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PurchaseMapper">
+ 	
+ 	
+	<resultMap id="purchaseSelectMap" type="purchase">
+		
+		<result property="buyer.userId" 		column="buyer_id" 			jdbcType="VARCHAR"/>
+		<!-- <result property="purchaseProd.prodNo"	column="prod_no" 	jdbcType="NUMERIC" />-->
+		
+		<result property="tranNo" 			column="tran_no" 			jdbcType="NUMERIC"/>
+		<result property="paymentOption"	column="payment_option" 	jdbcType="VARCHAR" />
+		<result property="receiverName" 	column="receiver_name" 		jdbcType="VARCHAR" />
+		<result property="receiverPhone" 	column="receiver_phone" 	jdbcType="VARCHAR" />
+		<result property="divyAddr" 		column="demailaddr" 		jdbcType="VARCHAR" />
+		<result property="divyRequest" 		column="dlvy_request" 		jdbcType="VARCHAR" />
+		<result property="tranCode" 		column="tran_status_code" 	jdbcType="VARCHAR" />
+		<result property="orderDate" 		column="order_data" 		jdbcType="DATE" />
+		<result property="divyDate" 		column="dlvy_date" 			jdbcType="DATE" />
+		<association property="purchaseProd"  javaType="product">
+			<id property="prodNo" column="prod_no" jdbcType="NUMERIC"/>
+			<result property="prodName" column="prod_name" jdbcType="VARCHAR"/>
+			<result property="prodDetail" column="prod_detail" jdbcType="VARCHAR"/>
+			<result property="manuDate" column="manufacture_day" jdbcType="VARCHAR"/>
+			<result property="price" column="price" jdbcType="NUMERIC"/>
+			<result property="fileName" column="image_file" jdbcType="VARCHAR"/>
+			<result property="regDate" column="REG_DATE" jdbcType="DATE"/>
+			<result property="stockCnt" column="stock_cnt" jdbcType="NUMERIC"/>
+		</association>
+		<!-- <collection property="buyer" javaType="user">
+			<result property="userId" column="buyer_id" jdbcType="VARCHAR" />
+		</association>
+		<association property="purchaseProd" javaType="product">
+			<result property="prodNo" column="prod_no" jdbcType="NUMERIC" />
+		</association> -->
+	</resultMap>
+	
+	<!-- SQL : INSERT -->
+	<insert 	id="addPurchase"		parameterType="purchase" >
+	 	INSERT INTO transaction(tran_no, prod_no, buyer_id, payment_option, receiver_name, receiver_phone, demailaddr, dlvy_request, tran_status_code, order_data, dlvy_date ) VALUES  (seq_transaction_tran_no.NEXTVAL,#{purchaseProd.prodNo},#{buyer.userId},#{paymentOption},#{receiverName},#{receiverPhone},#{divyAddr},#{divyRequest},1,SYSDATE,#{divyDate})	
+	</insert>
+	
+	<select 	id="getPurchase"	parameterType="int"	resultMap="purchaseSelectMap">
+	 SELECT 
+	PROD_NO, PROD_NAME, PROD_DETAIL, MANUFACTURE_DAY, PRICE, IMAGE_FILE, REG_DATE, stock_cnt 
+	 FROM product WHERE prod_no=#{purchaseProd.prodNo}
+		
+	 </select>
+	 
+	<select 	id="getPurchase2"	parameterType="int"	resultMap="purchaseSelectMap">
+	 SELECT 
+	 tran_no, prod_no, payment_option, receiver_name, receiver_phone, demailaddr, dlvy_request, tran_status_code, order_data, dlvy_date 
+	 FROM transaction 
+	 WHERE tran_no=#{tranNo}
+		
+	 </select>
+	
+	
+	 <!-- SQL : UPDATE -->
+	 <update	id="updatePurchase"	parameterType="purchase" >
+	   	UPDATE transaction  
+	   	<set>
+	   		PAYMENT_OPTION 	= #{paymentOption} ,
+			receiver_name	= #{receiverName:VARCHAR},
+			receiver_phone = #{receiverPhone:VARCHAR} ,
+			demailaddr	= #{divyAddr:VARCHAR} ,
+			dlvy_request	= #{divyRequest:VARCHAR} ,
+			dlvy_date	= #{divyDate}
+			
+			
+	   	</set>
+	   	WHERE tran_no = #{tranNo}
+	   	
+	 </update>
+	 
+	 
+	 
+	  <!-- SQL : UPDATE -->
+	 <update	id="updateTranCode"	parameterType="purchase" >
+	   	update transaction set TRAN_STATUS_CODE = #{tranCode} where tran_no = #{tranNo}
+	 </update>
+	 
+	 
+	  <!-- SQL : UPDATE -->
+	 <update	id="updateStockCntProduct"	parameterType="product" >
+	   	UPDATE product 
+	   	<set>
+	   		stock_cnt 	= #{stockCnt} 
+			
+	   	</set>
+	   	WHERE prod_no = #{prodNo}
+	 </update>
+	 
+	 
+		
+<select id="getPurchaseList" parameterType="map" resultMap="purchaseSelectMap">
+  		SELECT *
+  		FROM ( SELECT inner_table.*, ROWNUM AS row_seq
+  						FROM ( SELECT t.tran_no, t.buyer_id, u.user_name, u.cell_phone, t.tran_status_code, p.prod_name, p.prod_no  
+										FROM transaction t, users u, product p 
+										WHERE t.buyer_id = u.user_id AND t.prod_no=p.prod_no  
+										AND u.user_id = #{buyerId}
+										ORDER BY tran_no  ) inner_table
+  						WHERE ROWNUM <![CDATA[<=]]> #{search.currentPage}*#{search.pageSize} )
+  		WHERE row_seq BETWEEN (#{search.currentPage}-1)*#{search.pageSize}+1
+  		AND #{search.currentPage}*#{search.pageSize}
+</select>
+
+<select id="getTransactionList" parameterType="search" resultMap="purchaseSelectMap">
+  		SELECT *
+  		FROM ( SELECT inner_table.*, ROWNUM AS row_seq
+  						FROM ( SELECT t.tran_no, t.prod_no, p.prod_name, t.buyer_id, t.tran_status_code, t.order_data, t.dlvy_date 
+										FROM transaction t, product p 
+										WHERE tran_status_code=1 AND t.prod_no=p.prod_no 
+										ORDER BY order_data  ) inner_table
+  						WHERE ROWNUM <![CDATA[<=]]> #{currentPage}*#{pageSize} )
+  		WHERE row_seq BETWEEN (#{currentPage}-1)*#{pageSize}+1
+  		AND #{currentPage}*#{pageSize}
+</select>
+
+
+ 
+	 <select  id="getTotalCount"  parameterType="string" 	 resultType="int">
+	  	SELECT COUNT(*)
+	  	FROM(	SELECT tran_no FROM transaction WHERE buyer_id=#{value} ) countTable						
+	 </select>
+	
+
+	 <select  id="getTotalTranCount"  	 resultType="int">
+	  	SELECT COUNT(*)
+	  	FROM(	SELECT tran_no FROM transaction WHERE tran_status_code=1 ) countTable						
+	 </select>
+	
+		
+	
+	
+	
+	
+			
+	
+	<select  id="getProductPurchaseList"  parameterType="int"	resultMap="purchaseSelectMap">
+	  	
+	  	SELECT
+	  	t.tran_no, p.PROD_NO, p.prod_name, t.buyer_id, t.order_data, t.tran_status_code, p.stock_cnt 
+		FROM PRODUCT p,   transaction t  
+		WHERE t.prod_no=p.prod_no AND p.prod_no= #{value}  
+		
+	  	
+	 </select>
+	
+	
+	 
+</mapper>
