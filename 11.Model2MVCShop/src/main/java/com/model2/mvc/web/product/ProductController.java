@@ -2,6 +2,7 @@ package com.model2.mvc.web.product;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -320,16 +321,18 @@ public class ProductController {
 	
 	// 21.10.15 cart 기능 
 	@RequestMapping( value="addCart")
-	public String addCart(@RequestParam("userId") String userId, @RequestParam("prodNo") String prodNumber) throws Exception {
+	public String addCart(@RequestParam("userId") String userId, @RequestParam("prodNo") String prodNumber, HttpServletResponse response) throws Exception {
 
 		System.out.println("/product/addCart   : POST");
 
 		int prodNo = Integer.parseInt(prodNumber);
 		System.out.println("userid: "+userId);
 		System.out.println("prodNo : "+prodNo);
+		
+		boolean result = productService.validationCart(prodNo, userId);
 		///boolean result = productService.validationCart(prodNo, userId);
 		//System.out.println("result : "+result);
-		//if (result == true) {
+		if (result == true) {
 			//System.out.println("purchase : "+purchase);
 		productService.addCart(prodNo, userId);
 		
@@ -337,31 +340,40 @@ public class ProductController {
 		
 		return "redirect:/product/listCart";
 		
-	//	}else
-	//	return "";
+		}else {
+			response.setContentType("text/html; charset=UTF-8");
+
+			PrintWriter out = response.getWriter();
+			 
+			out.println("<script>alert('동일한 상품이 장바구니에 있습니다.'); history.go(-1);</script>");
+			 
+			out.flush();
+
+
+			//out.println("<script>alert('동일한 상품이 장바구니에 있습니다.');");
+			//System.out.println("</script>");
+			//return "/product/listProduct?menu=search";
+			return "";
+		}
 	}
 	
 	@RequestMapping( value="listCart" )
-	public ModelAndView listCart( @ModelAttribute("search") Search search , HttpSession session) throws Exception{
+	public ModelAndView listCart(HttpSession session) throws Exception{
 		
 	System.out.println("/product/listCart  : GET / POST");
 		
-		if(search.getCurrentPage() ==0 ){
-			search.setCurrentPage(1);
-		}
+		
 		String buyerId=((User)session.getAttribute("user")).getUserId();
 		
-		search.setPageSize(pageSize);
+		
 		
 		// Business logic 수행
-		Map<String , Object> map=productService.getCartList(search, buyerId);
-		Page resultPage = new Page( search.getCurrentPage(), 0, pageUnit, pageSize);
-
+		Map<String , Object> map=productService.getCartList(buyerId);
+		
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("/product/listCart.jsp");
 		modelAndView.addObject("list", map.get("list"));
-		modelAndView.addObject("resultPage", resultPage);
-		modelAndView.addObject("search", search);
+		
 
 		return modelAndView;
 	}

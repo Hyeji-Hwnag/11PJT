@@ -89,18 +89,24 @@ $(function() {
 	});
 	 
 	 $( "input[value='가격낮은순']" ).on("click" , function() {
+		 $("input[name='orderColurm']").val('p.price')
 		 fncGetOrderList('1', 'p.price');
 	});
 	 
 	 $( "input[value='가격높은순']" ).on("click" , function() {
+		 $("input[name='orderColurm']").val('p.price desc')
+	 
 		 fncGetOrderList('1', 'p.price desc');
 	});
 	 
 	 $( "input[value='상품명낮은순']" ).on("click" , function() {
+		 $("input[name='orderColurm']").val('p.prod_name asc')
+	 
 		 fncGetOrderList('1', 'p.prod_name asc');
 	});
 	 
 	 $( "input[value='상품명높은순']" ).on("click" , function() {
+		 $("input[name='orderColurm']").val('p.prod_name desc')
 		 fncGetOrderList('1', 'p.prod_name desc');
 	});
 	 
@@ -244,92 +250,95 @@ $(function() {
 var page=2;
 $(window).scroll(function() {
 	
+	//alert("window.scrollY"+window.scrollY)
     //if ($(window).scrollTop()  == $(document).height() - $(window).height()) {
 	if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-		
-		var userId = $("input[name='userId']").val()
- 		var menu = $("input[name='menu']").val()
-		
- 	 $.ajax({
-
- 	 	url : "/product/json/listProduct",
- 	 	method : "POST",
- 	 	dataType : "json",
- 	 	data : { currentPage : page, 
- 	 		searchCondition : $("select[name='searchCondition']").val(),
- 	 		searchKeyword : $("#autoCompl").val()
- 	 		},
- 	 	
- 	 	//contentType:"application/json;charset=UTF-8", 
- 	 	contentType: "application/x-www-form-urlencoded;", 
- 	 	success : function(jsonData) {
- 	 		page++;
- 	 		var list = jsonData.list;
- 	 		
- 	 		for(var i=0; i<list.length; i++){
- 	 			var div="";
- 	 			
- 	 			div += 
- 	 				"<div class='col-sm-6 col-md-4'>"+
- 	 				"<div class='thumbnail'>"+
- 	 			    "<img src='/images/uploadFiles/"+list[i].fileName+"' width='200' height='200' alt='...' />"+
- 	 			      
- 	 			      "<div class='caption'>"+
- 	 			        "<h3>"+list[i].prodName+"</h3>"+
- 	 			        "<input type='hidden' id='prodNo' name='prodNo' value='"+list[i].prodNo+"'/>"+
- 	 			        "<p>가격 : "+list[i].price+"원</p>";
- 	 			if (list[i].stockCnt==0){
- 	 				div += "<p>재고없음 </p>";
- 	 			}else if (list[i].stockCnt!=0){
- 	 				div += "<p>수량: "+list[i].stockCnt+"개</p> ";
- 	 			}
- 	 			div += "<p>"+
- 	 			"<input type='hidden' id='prodNo' name='prodNo' value='"+list[i].prodNo+"'/>"+
- 	 			"<input type='hidden' id='userId' name='userId' value='"+userId+"'/>"+
- 	 			"<input type='hidden' id='stockCnt' name='stockCnt' value='"+list[i].stockCnt+"'/>"+
- 	 			"<a href='#' class='btn btn-default detail_btn1' role='button'>상세정보</a>";
- 	 			
- 	 			
- 	 			if(userId == 'admin' && menu == 'manage'){
- 	 				div += "<a href='#' class='btn btn-default detail_btn2' role='button'>상품수정</a>"+
- 	 				"<a href='#' class='btn btn-default detail_btn3' role='button'>판매관리</a>";
- 	 			}
- 	 			
- 	 			if(userId != 'admin' && menu == 'search'){
- 	 				div += "<a href='#' class='btn btn-default detail_btn4' role='button'>장바구니</a>"+
- 	 				"<a href='#' class='btn btn-default detail_btn5' role='button'>구매</a>";
- 	 			}
- 	 			
- 	 		
- 	 			
- 	 			div +=  "</p> </div> </div> </div>";
- 	 			$('.row').append(div);
- 	 		  
- 	 			
- 	 		}
- 	 		
- 	 		
- 	 		
-
- 	 	},
-
- 	 	error : function() {
-
- 	 		alert("1에러가 발생하였습니다.")
-
- 	 	},
- 	 	
- 	 });
-      
-      
+	
+	    loadList();
       
     }
 });
 
 
 
+var loadList = function(){
+		var userId = $("input[name='userId']").val()
+		var menu = $("input[name='menu']").val()
+		
+	 $.ajax({
 
+	 	url : "/product/json/listProduct",
+	 	method : "POST",
+	 	dataType : "json",
+	 	data : { currentPage : page, 
+	 		searchCondition : $("select[name='searchCondition']").val(),
+	 		searchKeyword : $("#autoCompl").val(),
+	 		orderColurm : $("input[name='orderColurm']").val()
+	 		},
+	 	
+	 	//contentType:"application/json;charset=UTF-8", 
+	 	contentType: "application/x-www-form-urlencoded;", 
+	 	success : function(jsonData) {
+	 		page++;
+	 		var list = jsonData.list;
+	 		
+	 		for(var i=0; i<list.length; i++){
+	 			var div="";
+	 			
+	 			div += 
+	 				"<div class='col-sm-6 col-md-4'>"+
+	 				"<div class='thumbnail'>"+
+	 			    "<img src='/images/uploadFiles/"+list[i].fileName+"' width='200' height='200' alt='...' />"+
+	 			      
+	 			      "<div class='caption'>"+
+	 			        "<h3>"+list[i].prodName+"</h3>"+
+	 			        "<input type='hidden' id='prodNo' name='prodNo' value='"+list[i].prodNo+"'/>"+
+	 			        "<p>가격 : "+list[i].price+"원</p>";
+	 			if (list[i].stockCnt==0){
+	 				div += "<p>재고없음 </p>";
+	 			}else if (list[i].stockCnt!=0){
+	 				div += "<p>수량: "+list[i].stockCnt+"개</p> ";
+	 			}
+	 			div += "<p>"+
+	 			"<input type='hidden' id='prodNo' name='prodNo' value='"+list[i].prodNo+"'/>"+
+	 			"<input type='hidden' id='userId' name='userId' value='"+userId+"'/>"+
+	 			"<input type='hidden' id='stockCnt' name='stockCnt' value='"+list[i].stockCnt+"'/>"+
+	 			"<a href='#' class='btn btn-default detail_btn1' role='button'>상세정보</a>";
+	 			
+	 			
+	 			if(userId == 'admin' && menu == 'manage'){
+	 				div += "<a href='#' class='btn btn-default detail_btn2' role='button'>상품수정</a>"+
+	 				"<a href='#' class='btn btn-default detail_btn3' role='button'>판매관리</a>";
+	 			}
+	 			
+	 			if(userId != 'admin' && menu == 'search'){
+	 				div += "<a href='#' class='btn btn-default detail_btn4' role='button'>장바구니</a>"+
+	 				"<a href='#' class='btn btn-default detail_btn5' role='button'>구매</a>";
+	 			}
+	 			
+	 		
+	 			
+	 			div +=  "</p> </div> </div> </div>";
+	 			$('.row').append(div);
+	 		  
+	 			
+	 		}
+	 		
+	 		
+	 		
 
+	 	},
+
+	 	error : function() {
+
+	 		alert("1에러가 발생하였습니다.")
+
+	 	},
+	 	
+	 });
+  
+
+}
 		
 		
 
@@ -394,9 +403,9 @@ $(window).scroll(function() {
 		</td>
 	</tr>
 </table>
-<p>전체  ${resultPage.totalCount } 건수, 현재 ${resultPage.currentPage}  페이지</p>
+<p>전체  ${resultPage.totalCount } 건수<!-- , 현재 ${resultPage.currentPage}  페이지--></p>
 <input name="menu" type="hidden" value="${menu}"/>
-		<input type="hidden" id="orderColurm" name="orderColurm" value=""/>
+		<input type="hidden" id="orderColurm" name="orderColurm" value="${search.orderColurm}"/>
 		<input type="hidden" id="orderKey" name="orderKey" value=""/>
 		<input type="hidden" id="tranStatusCode" name="tranStatusCode" value=""/>
 		
@@ -530,7 +539,7 @@ $(window).scroll(function() {
 	
 </table>
  --%>
-<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
+<!-- <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
 	<tr>
 		<td align="center">
 		 <input type="hidden" id="currentPage" name="currentPage" value=""/>
@@ -539,7 +548,7 @@ $(window).scroll(function() {
 		 
     	</td>
 	</tr>
-</table>
+</table> -->
 <!--  페이지 Navigator 끝 -->
 
 </form>

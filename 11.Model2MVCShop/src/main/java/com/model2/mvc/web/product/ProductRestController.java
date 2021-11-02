@@ -105,13 +105,17 @@ public class ProductRestController {
 		System.out.println("/product/listProduct : GET11111111111111111");
 		
 		int currentPage = Integer.parseInt(request.getParameter("currentPage"));
-		
+		String orderColurm = "p.prod_no";
+		if (request.getParameter("orderColurm") != null || request.getParameter("orderColurm") != "") {
+			orderColurm = request.getParameter("orderColurm");
+		}
 //		String keyword = request.getParameter("keyword");
 	System.out.println("c : "+currentPage);
+	System.out.println("orderColurm : "+orderColurm);
 		Search search = new Search();
 		search.setCurrentPage(currentPage);
 		search.setPageSize(pageSize);
-		search.setOrderColurm("p.prod_no");
+		search.setOrderColurm(orderColurm);
 		search.setSearchCondition(request.getParameter("searchCondition"));
 		search.setSearchKeyword(request.getParameter("searchKeyword"));
 		// Business logic ผ๖วเ

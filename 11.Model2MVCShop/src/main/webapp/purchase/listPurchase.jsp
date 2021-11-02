@@ -55,7 +55,7 @@ $(function() {
 	$("td.checkT:contains('¹°°ÇµµÂø')").on("click" , function() {
 	
 		
-		 var checkBtn = $(this);
+		var checkBtn = $(this);
 		var tr = checkBtn.parent();
 		var td = tr.children();
 						
@@ -65,6 +65,7 @@ $(function() {
 			
 		self.location="/purchase/updateTranCode?tranNo="+tranNo+"&tranCode="+tranCode;
 	});
+	
 	$( ".ct_list_pop td:nth-child(1)" ).css("color" , "blue");
 	$( ".ct_list_pop td:nth-child(1)" ).on("click" , function() {
 		self.location ="/purchase/getPurchase?tranNo="+$(this).text().trim();

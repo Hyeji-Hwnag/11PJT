@@ -105,18 +105,20 @@ public class ProductServiceImpl implements ProductService{
 		map.put("prodNo", prodNo);
 		map.put("userId", userId);
 		//System.out.println("prodNo :"+prodNo+" userId :"+userId);
-		//String res = productDao.validationCart(map);
-		//System.out.println("res: "+res);
-		//if ( res.equals("Y")) {
-		//	result = false;
-		//}
+		String res = productDao.validationCart(map);
+		System.out.println("res: "+res);
+		if ( res == "" || res == null || res.equals("") || res.equals(null)) {
+			result = true;
+		}else if (res.equals("Y")) {
+			result= false;
+		}
 		return result;
 	}
 	
 	//21. 10. 17 
-	public Map<String,Object> getCartList(Search search,String buyerId) throws Exception {
+	public Map<String,Object> getCartList(String buyerId) throws Exception {
 		
-		return productDao.getCartList(search, buyerId);
+		return productDao.getCartList(buyerId);
 	}
 	
 	public void deleteCart(int cartId) throws Exception{

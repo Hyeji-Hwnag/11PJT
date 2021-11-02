@@ -64,6 +64,55 @@ $(function() {
 			//alert(  $( "td.ct_btn01:contains('가입')" ).html() );
 			history.go(-1);
 		});
+	 $("input:button[name='minus']").on("click" , function() {
+			//Debug..
+			//alert(  $( "td.ct_btn01:contains('가입')" ).html() );
+			var cnt = $("input:text[name='stockCount']").val()
+			if (cnt-1 < 1)
+			{
+				alert("1개부터 구매 가능합니다.")
+			}else
+			$("input:text[name='stockCount']").val(cnt-1)
+			
+		});
+	 $("input:button[name='plus']").on("click" , function() {
+			//Debug..
+			//alert(  $( "td.ct_btn01:contains('가입')" ).html() );
+			var cnt = $("input:text[name='stockCount']").val()
+			var stockCnt = $("input:hidden[name='stockCnt']").val()
+			
+			var num = cnt*1 + 1 
+			
+			if ( num > stockCnt*1)
+			{
+				alert("구매는 최대 " +stockCnt+ "개 까지 가능합니다.")
+			}else
+			$("input:text[name='stockCount']").val(num)
+			
+		});
+	 
+	 
+	 $("#apibtn").click(function(){
+		 var pr =  $("input[name='price']").val()
+		 var amount = $("input[name='stockCount']").val()
+		 var price = pr * amount;
+		
+		 $.ajax({
+			url:"/purchase/json/kakaopay",
+			data : { price : price },
+			dataType : "json",
+			success: function(data){
+				
+				var box = data.next_redirect_pc_url;
+				window.open(box);
+				fncAddPurchase();
+			},
+			error:function(error){
+				alert(error);
+			}
+		 });
+	 });
+	 
 });	
 
 
@@ -91,10 +140,14 @@ $(function() {
 	       <h3>상품구매</h3>
 	    </div>
 
-<form name="addPurchase">
+<form name="addPurchase" class="form-horizontal">
 
 
 <input type="hidden" name="prodNo" value="${purchase.purchaseProd.prodNo}" />
+
+<div class="row">
+ <div class="col-md-3"><img src="/images/uploadFiles/${purchase.purchaseProd.fileName}" width="300" height="300" /></div>
+<div class="col-md-9">
 
 <table width="600" border="0" cellspacing="0" cellpadding="0"	align="center" style="margin-top: 13px;">
 	<tr>
@@ -147,7 +200,10 @@ $(function() {
 	<tr>
 		<td width="104" class="ct_write">가격</td>
 		<td bgcolor="D6D6D6" width="1"></td>
-		<td class="ct_write01">${purchase.purchaseProd.price}</td>
+		<td class="ct_write01">
+				<input type="hidden" name="price" 	value="${purchase.purchaseProd.price}" />
+		
+		 ${purchase.purchaseProd.price}</td>
 	</tr>
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
@@ -156,6 +212,22 @@ $(function() {
 		<td width="104" class="ct_write">등록일자</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">${purchase.purchaseProd.regDate}</td>
+	</tr>
+	<tr>
+		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
+	</tr>
+	<tr>
+		<td width="104" class="ct_write">
+			수량 <img src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
+		</td>
+		<td bgcolor="D6D6D6" width="1"></td>
+		
+		<td class="ct_write01">
+		<input type="button" name="minus" value="-"/>
+		<input type="hidden" name="stockCnt" 	value="${purchase.purchaseProd.stockCnt}" />
+		<input type="text" name="stockCount" 	class="ct_input_g" style="width: 80px; height: 19px" maxLength="20" value="1" />
+		<input type="button" name="plus" value="+"/>
+		&nbsp;(${purchase.purchaseProd.stockCnt}개)</td>
 	</tr>
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
@@ -243,7 +315,8 @@ $(function() {
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
 	</tr>
 </table>
-<input type="hidden" name="stockCnt" value="${purchase.purchaseProd.stockCnt }"/>
+</div>
+</div>
 <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 10px;">
 	<tr>
 		<td width="53%"></td>
@@ -257,10 +330,15 @@ $(function() {
 						<!-- <a href="javascript:fncAddPurchase();">구매</a> -->
 						구매
 					</td>
+					
 					<td width="14" height="23">
 						<img src="/images/ct_btnbg03.gif" width="14" height="23"/>
 					</td>
+					
 					<td width="30"></td>
+					
+					<input type="button" id = "apibtn" value="카카오페이" />
+					
 					<td width="17" height="23">
 						<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 					</td>

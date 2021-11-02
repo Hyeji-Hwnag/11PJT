@@ -19,6 +19,7 @@ public class Purchase {
 	private String receiverPhone;
 	private String tranCode;
 	private int tranNo;
+	private int stockCount;
 	
 	public Purchase(){
 	}
@@ -90,6 +91,14 @@ public class Purchase {
 		this.tranNo = tranNo;
 	}
 	
+	public int getStockCount() {
+		return stockCount;
+	}
+
+	public void setStockCount(int stockCount) {
+		this.stockCount = stockCount;
+	}
+
 	@Override
 	public String toString() {
 		return "PurchaseVO [buyer=" + buyer + ", divyAddr=" + divyAddr

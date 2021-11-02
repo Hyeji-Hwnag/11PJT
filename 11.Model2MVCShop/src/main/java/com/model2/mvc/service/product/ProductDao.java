@@ -34,7 +34,7 @@ public interface ProductDao {
 	public String validationCart(Map map) throws Exception;
 	
 	// 21. 10. 17 
-	public Map<String,Object> getCartList(Search search,String buyerId) throws Exception;
+	public Map<String,Object> getCartList(String buyerId) throws Exception;
 	public void deleteCart(int cartId) throws Exception;
 
 	//21. 10. 27 

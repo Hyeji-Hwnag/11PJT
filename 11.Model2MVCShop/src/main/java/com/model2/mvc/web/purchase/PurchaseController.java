@@ -81,7 +81,7 @@ public class PurchaseController {
 	
 		//System.out.println("purchase : "+purchase);
 		purchaseService.addPurchase(purchase);
-		purchaseService.updateStockCntProduct(product.getProdNo(), product.getStockCnt()-1);
+		purchaseService.updateStockCntProduct(product.getProdNo(), product.getStockCnt()-purchase.getStockCount());
 		
 //		
 //		model.addAttribute("purchase", purchase);
@@ -99,6 +99,8 @@ public class PurchaseController {
 		System.out.println("/purchase/getPurchase    : GET/POST");
 
 		Purchase purchase = purchaseService.getPurchase2(tranNo);
+		
+		System.out.println("purchase : "+purchase);
 		//System.out.println("purchase.getDivyRequest : "+purchase);
 //		model.addAttribute("purchase", purchase);
 //		return "forward:/purchase/getPurchase.jsp"; //// jsp getPurchase·Î º¸³¿ 

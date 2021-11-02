@@ -28,7 +28,7 @@ public interface ProductService {
 	//21. 10. 15 장바구니 유효성 체크 
 	public boolean validationCart(int prodNo, String userId)throws Exception;
 	//21. 10. 17 장바구니 리스트 
-	public Map<String,Object> getCartList(Search search,String buyerId) throws Exception;
+	public Map<String,Object> getCartList(String buyerId) throws Exception;
 	//21. 10. 17 delete 
 	public void deleteCart(int cartId) throws Exception;
 	

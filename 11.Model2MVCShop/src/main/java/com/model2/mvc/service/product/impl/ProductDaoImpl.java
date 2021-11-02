@@ -76,15 +76,13 @@ public class ProductDaoImpl implements ProductDao{
 	}
 	
 	//21. 10. 17 
-	public Map<String,Object> getCartList(Search search,String buyerId) throws Exception {
+	public Map<String,Object> getCartList(String buyerId) throws Exception {
 		
 		Map<String , Object>  map = new HashMap<String, Object>();
 		
-		map.put("search", search);
-		map.put("buyerId", buyerId);
-	
 		
-		List<Product> list = sqlSession.selectList("ProductMapper.getCartList", map); 
+		
+		List<Product> list = sqlSession.selectList("ProductMapper.getCartList", buyerId); 
 		//map.put("totalCount", sqlSession.selectOne("ProductMapper.getTotalCount", buyerId));
 
 		map.put("list", list);

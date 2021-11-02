@@ -150,22 +150,17 @@
 	 SELECT 
 	 flag  
 	 FROM cart 
-	 WHERE prod_no=#{prodNo} AND user_id=#{userID} AND flag='Y' 
+	 WHERE prod_no=#{prodNo} AND user_id=#{userId} AND flag='Y' 
 	 </select>
 	
 	
 
 		
-<select id="getCartList" parameterType="map" resultMap="productSelectMap">
-  		SELECT *
-  		FROM ( SELECT inner_table.*, ROWNUM AS row_seq
-  						FROM ( SELECT c.cart_id, c.prod_no, c.flag, p.prod_name, p.stock_cnt   
+<select id="getCartList" parameterType="string" resultMap="productSelectMap">
+  		SELECT c.cart_id, c.prod_no, c.flag, p.prod_name, p.stock_cnt   
 										FROM cart c, product p 
 										WHERE user_id=#{buyerId} AND flag='Y' AND p.prod_no = c.prod_no 
-										ORDER BY cart_id  ) inner_table 
-  						WHERE ROWNUM <![CDATA[<=]]> #{search.currentPage}*#{search.pageSize} )
-  		WHERE row_seq BETWEEN (#{search.currentPage}-1)*#{search.pageSize}+1
-  		AND #{search.currentPage}*#{search.pageSize}
+										ORDER BY cart_id
 </select>
 	 
 	 
