@@ -9,6 +9,9 @@
  <c:if test="${ ! empty user }">
  	<jsp:forward page="main.jsp"/>
  </c:if>
+  <c:if test="${  empty user }">
+ 	<jsp:forward page="/product/listProduct?menu=search"/>
+ </c:if>
  <!-- //////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
 
@@ -27,6 +30,7 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" >
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" ></script>
+	<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 	
 	<!--  ///////////////////////// CSS ////////////////////////// -->
 	<style></style>
@@ -34,6 +38,9 @@
    	<!--  ///////////////////////// JavaScript ////////////////////////// -->
 	<script type="text/javascript">
 		
+	
+	
+	
 		//============= 회원원가입 화면이동 =============
 		$( function() {
 			//==> 추가된부분 : "addUser"  Event 연결

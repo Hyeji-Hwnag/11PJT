@@ -53,4 +53,32 @@ public class UserRestController {
 		
 		return dbUser;
 	}
+	
+	
+	@RequestMapping( value="json/checkDuplication/{userId}", method=RequestMethod.GET )
+	public Boolean checkDuplication( @PathVariable String userId ) throws Exception{
+		
+		System.out.println("/user/json/checkDuplication : GET");
+				//Business Logic
+		boolean result=userService.checkDuplication(userId);
+		// Model °ú View ¿¬°á
+		
+		return result;
+	}
+	
+	@RequestMapping( value="json/addUser", method=RequestMethod.POST )
+	public User addUser(	@RequestBody User user,
+									HttpSession session ) throws Exception{
+	
+		System.out.println("/user/json/login : POST");
+		//Business Logic
+		System.out.println("::"+user);
+		System.out.println("/user/addUser : POST");
+		//Business Logic
+		userService.addUser(user);
+		
+		return user;
+	}
+	
+	
 }

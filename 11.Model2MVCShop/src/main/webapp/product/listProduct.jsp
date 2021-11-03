@@ -306,17 +306,19 @@ var loadList = function(){
 	 			"<a href='#' class='btn btn-default detail_btn1' role='button'>상세정보</a>";
 	 			
 	 			
-	 			if(userId == 'admin' && menu == 'manage'){
+	 			if (userId !== ""){
+	 			
+	 			if( userId == 'admin' && menu == 'manage'){
 	 				div += "<a href='#' class='btn btn-default detail_btn2' role='button'>상품수정</a>"+
 	 				"<a href='#' class='btn btn-default detail_btn3' role='button'>판매관리</a>";
 	 			}
 	 			
-	 			if(userId != 'admin' && menu == 'search'){
+	 			if(  userId != 'admin' && menu == 'search'){
 	 				div += "<a href='#' class='btn btn-default detail_btn4' role='button'>장바구니</a>"+
 	 				"<a href='#' class='btn btn-default detail_btn5' role='button'>구매</a>";
 	 			}
 	 			
-	 		
+	 			}
 	 			
 	 			div +=  "</p> </div> </div> </div>";
 	 			$('.row').append(div);
@@ -447,12 +449,13 @@ var loadList = function(){
 		
 		
 		
-		<c:if test="${user.userId eq 'admin' && menu eq 'manage'}">
+		
+		<c:if test="${!empty user && user.userId eq 'admin' && menu eq 'manage'}">
         <a href="#" class="btn btn-default detail_btn2" role="button">상품수정</a> 
         <a href="#" class="btn btn-default detail_btn3" role="button">판매관리</a>
         </c:if>
         
-        <c:if test="${user.role eq 'user' && menu eq 'search'}">
+        <c:if test="${!empty user && user.role eq 'user' && menu eq 'search'}">
         <a href="#" class="btn btn-default detail_btn4" role="button">장바구니</a> 
         <a href="#" class="btn btn-default detail_btn5" role="button">구매</a> 
         </c:if>

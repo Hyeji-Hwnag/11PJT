@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -121,7 +122,9 @@ public class UserController {
 			session.setAttribute("user", dbUser);
 		}
 		
-		return "redirect:/index.jsp";
+		//return "redirect:/index.jsp";
+	    return "redirect:/product/listProduct?menu=search";
+
 	}
 		
 	
@@ -131,7 +134,7 @@ public class UserController {
 		System.out.println("/user/logout : POST");
 		
 		session.invalidate();
-		
+
 		return "redirect:/index.jsp";
 	}
 	
@@ -173,4 +176,26 @@ public class UserController {
 		
 		return "forward:/user/listUser.jsp";
 	}
+	
+	
+	
+	
+	
+	
+	
+	@RequestMapping(value="snsLogin/{userId}", method=RequestMethod.POST)
+	public String snsLogin( @PathVariable String userId, HttpSession session ) throws Exception{
+	    System.out.println("/user/snsLogin : POST");
+	        
+	    User dbUser = userService.getUser(userId);
+	        
+	    session.setAttribute("user", dbUser);
+	        
+	    //return "redirect:/index.jsp";
+	    return "redirect:/product/listProduct?menu=search";
+	}
+
+
+		
+		
 }

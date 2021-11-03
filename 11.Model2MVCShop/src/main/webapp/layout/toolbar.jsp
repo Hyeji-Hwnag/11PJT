@@ -88,9 +88,21 @@
 	                <li><a href="#">장바구니</a></li>
 	            </ul>
 	                         </c:if>
-	             <ul class="nav navbar-nav navbar-right">
+	                         
+	                         
+	              <c:if test="${!empty user }">
+	              <ul class="nav navbar-nav navbar-right">
 	                <li><a href="#">로그아웃</a></li>
-	            </ul>
+	                <!-- <li><a href="javascript:kakaoLogout();">카카오로그아웃</a></li> -->
+	           		 </ul>
+	                 </c:if>
+	                 <c:if test="${empty user }">
+	              <ul class="nav navbar-nav navbar-right">
+	                <li><a href="#">로그인</a></li>
+	                <!-- <li><a href="javascript:kakaoLogout();">카카오로그아웃</a></li> -->
+	           		 </ul>
+	                 </c:if>
+	             
 		</div>
 		<!-- dropdown hover END -->	       
 	    
@@ -99,11 +111,32 @@
 		<!-- ToolBar End /////////////////////////////////////-->
  	
    	
-   	
+   	<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
    	<script type="text/javascript">
-	
+   	
+   	// kakao
+ 	Kakao.init('51615d81a030d0475e576eb41e443c14');
+	Kakao.isInitialized();
+	 
+	 Kakao.API.request({
+		 url:'/v1/user/unlink',
+		 success:function(response){
+			 callbackFunction();
+		 },
+		 fail:function(error){
+			 //alert("?");
+		 }
+	 });
+
+
+   	
+   	
+   	
 		//============= logout Event  처리 =============	
 		 $(function() {
+			 
+	
+			 
 			//==> DOM Object GET 3가지 방법 ==> 1. $(tagName) : 2.(#id) : 3.$(.className)
 		 	$("a:contains('로그아웃')").on("click" , function() {
 				$(self.location).attr("href","/user/logout");
@@ -158,6 +191,12 @@
 			$(self.location).attr("href","/product/listCart");
 		});
 		
-		
+		//============= 로그인 화면이동 =============
+		$( function() {
+			//==> 추가된부분 : "addUser"  Event 연결
+			$("a[href='#' ]:contains('로그인')").on("click" , function() {
+				self.location = "/user/login"
+			});
+		});
 		
 	</script>  

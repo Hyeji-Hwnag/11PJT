@@ -17,6 +17,7 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" >
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" ></script>
+		<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 	
 	<!--  ///////////////////////// CSS ////////////////////////// -->
 	<style>
@@ -29,6 +30,76 @@
     <!--  ///////////////////////// JavaScript ////////////////////////// -->
 	<script type="text/javascript">
 
+	// kakao 
+	
+	$( function() {
+	Kakao.init('51615d81a030d0475e576eb41e443c14');
+	        
+	$("#kakao-login-btn").on("click", function(){
+		
+	    //1. 로그인 시도
+	    Kakao.Auth.login({
+	        success: function(authObj) {
+	          //console.log(JSON.stringify(authObj));
+	          console.log(Kakao.Auth.getAccessToken());
+	        
+	          //2. 로그인 성공시 API를 호출
+	          Kakao.API.request({
+	            url: '/v2/user/me',
+	            success: function(res) {
+	              //console.log(JSON.stringify(res));
+	              res.id += "@k";
+	              
+	              $.ajax({
+	                  url : "/user/json/checkDuplication/"+res.id,
+	                  headers : {
+	                      "Accept" : "application/json",
+	                      "Content-Type" : "application/json"
+	                    },
+	                    success : function(idChk){
+	                        
+	                        if(idChk==true){
+	                            
+	                            $.ajax({
+	                                url : "/user/json/addUser",
+	                                method : "POST",
+	                                headers : {
+	                                  "Accept" : "application/json",
+	                                  "Content-Type" : "application/json"
+	                                },
+	                                data : JSON.stringify({
+	                                userId : res.id,
+	                                userName : res.properties.nickname,
+	                                password : "1234",
+	                                }),
+	                                success : function(JSONData){
+	                                   alert("회원가입이 정상적으로 되었습니다.");
+	                                   $("form").attr("method","POST").attr("action","/user/snsLogin/"+res.id).attr("target","_parent").submit();
+	                                }
+	                            })
+	                        }
+	                        if(idChk==false){ //DB에 아이디가 존재할 경우 => 로그인
+	                            console.log("로그인중...");
+	                            $("form").attr("method","POST").attr("action","/user/snsLogin/"+res.id).attr("target","_parent").submit();
+	                        }
+	                    }
+	              })
+	            },
+	            fail: function(error) {
+	              alert(JSON.stringify(error));
+	            }
+	          });
+	                  
+	        },
+	        fail: function(err) {
+	          alert(JSON.stringify(err));
+	        }
+	      });
+	        
+	})//e.o.kakao
+	});
+	
+	
 		//============= "로그인"  Event 연결 =============
 		$( function() {
 			
@@ -119,7 +190,15 @@
 			
 					</form>
 			   	 </div>
-			
+			<div id="kakaoLogin" align="center">
+    <a id="kakao-login-btn">
+    <img src="//k.kakaocdn.net/14/dn/btqbjxsO6vP/KPiGpdnsubSq3a0PHEGUK1/o.jpg" width="80%"/>
+    </a>
+    <a href="http://developers.kakao.com/logout"></a>
+</div>
+
+
+
 			</div>
 			
   	 	</div>

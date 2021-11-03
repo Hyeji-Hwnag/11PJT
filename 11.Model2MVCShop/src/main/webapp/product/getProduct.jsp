@@ -219,60 +219,48 @@ function fncCheckStockCnt(stockCnt){
 
 		<table border="0" cellspacing="0" cellpadding="0">
 			<tr>
-		
+				<c:if test="${!empty user && param.menu eq 'search'}">
 				<td width="17" height="23">
 					<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 				</td>
 				<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-				<%--
-				<% if(menu.equals("manage")){%>
-					<a href="/addPurchaseView.do?prod_no=<%=product.getProdNo() %>">확인</a>
-					<%}else {%>
-					<a href="/addPurchaseView.do?prod_no=<%=product.getProdNo() %>">구매</a>
-					<%} %> 
-				--%>
-				<c:if test="${param.menu eq 'manage'}">
-				<!-- 
-				<a href="/purchase/addPurchase?prodNo=${product.prodNo}">확인</a>
-				 -->
-				 확인
-				</c:if>
-				<c:if test="${param.menu eq 'search'}">
-				<!-- 
-				<a href="javascript:fncCheckStockCnt('${product.stockCnt }')">구매</a>
-				 -->
+				
+				
+				
+				
 				 구매
-				</c:if>
+				
 				
 				</td>
 				<td width="14" height="23">
 					<img src="/images/ct_btnbg03.gif" width="14" height="23">
 				</td>
 				<td width="30"></td>
-		
+				</c:if>
 				<td width="17" height="23">
 					<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 				</td>
 				<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-					<!-- <a href="javascript:history.go(-1)">이전</a> -->
+					
 					이전
 				</td>
 				<td width="14" height="23">
 					<img src="/images/ct_btnbg03.gif" width="14" height="23">
 				</td>
 				<td width="30"></td>
-		
+				<c:if test="${!empty user && param.menu eq 'search'}">
 				<td width="17" height="23">
 					<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 				</td>
 				<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-					<!-- <a href="/product/addCart?prodNo=${product.prodNo}&userId=${user.userId}">장바구니추가</a>
-				 -->
+					
 				 장바구니추가
+				 
 				 </td>
 				<td width="14" height="23">
 					<img src="/images/ct_btnbg03.gif" width="14" height="23">
 				</td>
+				</c:if>
 			</tr>
 		</table>
 
