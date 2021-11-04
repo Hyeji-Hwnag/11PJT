@@ -93,17 +93,23 @@ $(function() {
 	 
 	 
 	 $("#apibtn").click(function(){
+		 
 		 var pr =  $("input[name='price']").val()
 		 var amount = $("input[name='stockCount']").val()
 		 var price = pr * amount;
-		
+		 
+		 
 		 $.ajax({
 			url:"/purchase/json/kakaopay",
-			data : { price : price },
+			data : { price : price, prodName : $("input[name='prodName']").val()
+				 },
 			dataType : "json",
 			success: function(data){
 				
 				var box = data.next_redirect_pc_url;
+				
+				//window.open(box, "kakao", "width=480px, height=700px");
+				
 				window.open(box);
 				fncAddPurchase();
 			},
@@ -144,6 +150,7 @@ $(function() {
 
 
 <input type="hidden" name="prodNo" value="${purchase.purchaseProd.prodNo}" />
+<input type="hidden" name="prodName" value="${purchase.purchaseProd.prodName}" />
 
 <div class="row">
  <div class="col-md-3"><img src="/images/uploadFiles/${purchase.purchaseProd.fileName}" width="300" height="300" /></div>

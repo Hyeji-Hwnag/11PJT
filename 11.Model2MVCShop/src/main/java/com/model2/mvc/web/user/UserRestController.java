@@ -70,11 +70,7 @@ public class UserRestController {
 	public User addUser(	@RequestBody User user,
 									HttpSession session ) throws Exception{
 	
-		System.out.println("/user/json/login : POST");
-		//Business Logic
-		System.out.println("::"+user);
-		System.out.println("/user/addUser : POST");
-		//Business Logic
+	
 		userService.addUser(user);
 		
 		return user;

@@ -64,14 +64,15 @@ public class PurchaseRestController {
 		System.out.println("111");
 		try {
 			int price = Integer.parseInt(request.getParameter("price"));
-			System.out.println("price: "+price);
+			String prodName = request.getParameter("prodName");
+			
 			URL url = new URL("https://kapi.kakao.com/v1/payment/ready");
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("POST");
 			con.setRequestProperty("Authorization", "KakaoAK 2bc6f55f268ffcd4fadc8ac1eb6edc7a");
 			con.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 			con.setDoOutput(true);
-			String param ="cid=TC0ONETIME&partner_order_id=partner_order_id&partner_user_id=partner_user_id&item_name=초코파이&quantity=1&total_amount="+price+"&vat_amount=200&tax_free_amount=0&approval_url=http://127.0.0.1:8080/purchase/listPurchase&fail_url=http://127.0.0.1:8080&cancel_url=http://127.0.0.1:8080";
+			String param ="cid=TC0ONETIME&partner_order_id=partner_order_id&partner_user_id=partner_user_id&item_name="+prodName+"&quantity=1&total_amount="+price+"&vat_amount=200&tax_free_amount=0&approval_url=http://127.0.0.1:8080/purchase/comPurchase.jsp&fail_url=http://127.0.0.1:8080&cancel_url=http://127.0.0.1:8080";
 			OutputStream output = con.getOutputStream();
 			DataOutputStream dataoutput = new DataOutputStream(output);
 			
@@ -99,5 +100,15 @@ public class PurchaseRestController {
 		}
 		return "{\"result\":\"NO\"}";
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }
