@@ -1,5 +1,6 @@
 package com.model2.mvc.web.purchase;
 
+import java.io.PrintWriter;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -19,6 +20,7 @@ import com.model2.mvc.common.Page;
 import com.model2.mvc.common.Search;
 import com.model2.mvc.service.domain.Product;
 import com.model2.mvc.service.domain.Purchase;
+import com.model2.mvc.service.domain.Review;
 import com.model2.mvc.service.domain.User;
 import com.model2.mvc.service.purchase.PurchaseService;
 
@@ -158,6 +160,7 @@ public class PurchaseController {
 		int tranNo = Integer.parseInt(tranNumber);
 		Purchase purchase = purchaseService.getPurchase2(tranNo);
 		
+		
 //		model.addAttribute("purchase", purchase);
 //		return "forward:/purchase/updatePurchaseView.jsp";
 		ModelAndView modelAndView = new ModelAndView();
@@ -201,7 +204,8 @@ public class PurchaseController {
 	
 	//@RequestMapping("/updateTranCode.do")
 	@RequestMapping( value="updateTranCode", method=RequestMethod.GET )
-	public ModelAndView updateTranCode( @ModelAttribute("purchase") Purchase purchase, @RequestParam("tranNo") int tranNo, @RequestParam("tranCode") String tranCode) throws Exception{
+	//public ModelAndView updateTranCode( @ModelAttribute("purchase") Purchase purchase, @RequestParam("tranNo") int tranNo, @RequestParam("tranCode") String tranCode) throws Exception{
+	public ModelAndView updateTranCode( @ModelAttribute("purchase") Purchase purchase, @RequestParam("tranNo") int tranNo) throws Exception{
 
 		
 		System.out.println("/purchase/updateTranCode       :: GET ");
@@ -261,7 +265,7 @@ public class PurchaseController {
 	@RequestMapping( value="listTransaction")
 	public ModelAndView listTransaction(@ModelAttribute("search") Search search , HttpSession session) throws Exception{
 		
-		System.out.println("1111");
+		
 		if(search.getCurrentPage() ==0 ){
 			search.setCurrentPage(1);
 		}
@@ -285,6 +289,54 @@ public class PurchaseController {
 		return modelAndView;
 	}
 	
+	
+	@RequestMapping( value="addReviewView")
+	public ModelAndView addReviewView( @RequestParam("tranNo") String tranNumber, @RequestParam("prodNo") String prodNumber, HttpSession session) throws Exception {
+		System.out.println("/purchase/addReviewView.do   : GET");
+		
+		int tranNo = Integer.parseInt(tranNumber);
+		int prodNo = Integer.parseInt(prodNumber);
+		String userId=((User)session.getAttribute("user")).getUserId();
+		
+		System.out.println("userId: "+userId);
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.addObject("tranNo", tranNo);
+		modelAndView.addObject("prodNo", prodNo);
+		modelAndView.addObject("userId", userId);
+
+		boolean result = purchaseService.validationReview(tranNo);
+		if (result == true) { // 적은게 없으면 
+			System.out.println("적은거 없어");
+			modelAndView.setViewName("/product/productReview.jsp");
+		}else {//적은게 있으면 
+			System.out.println("적은거 잇으.......");
+			modelAndView.setViewName("/product/productReview.jsp");
+		}
+		
+		
+		return modelAndView;
+		
+	}
+	
+	
+	
+	//21. 11. 6 review
+	//@RequestMapping("/addPurchase.do")
+//	@RequestMapping( value="addReview")
+//	public void addReview( @ModelAttribute("review") Review review) throws Exception {
+//
+//		System.out.println("/purchase/addReview   : POST");
+//		System.out.println("review : "+review);
+//		
+//		purchaseService.addReview(review);
+//		
+//		Purchase purchase = purchaseService.getPurchase2(review.getTranNo());
+//		purchase.setTranCode("4"); 
+//		purchaseService.updateTranCode(purchase);  
+//		
+//		
+//		
+//	}
 	
 	
 	

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.model2.mvc.common.Search;
 import com.model2.mvc.service.domain.Product;
 import com.model2.mvc.service.domain.Purchase;
+import com.model2.mvc.service.domain.Review;
 import com.model2.mvc.service.domain.User;
 import com.model2.mvc.service.product.ProductDao;
 import com.model2.mvc.service.purchase.PurchaseDao;
@@ -114,4 +115,16 @@ public class PurchaseDaoImpl implements PurchaseDao{
 
 		return map;
 	}
+	
+	//21. 11. 6
+	public void addReview(Review review) throws Exception{
+		
+		sqlSession.insert("ReviewMapper.addReview", review);
+	}
+	
+	public String validationReview(int tranNo) throws Exception{
+		return sqlSession.selectOne("ReviewMapper.validationReview", tranNo);
+	}
+	
+	
 }

@@ -32,6 +32,7 @@ import com.model2.mvc.common.Page;
 import com.model2.mvc.common.Search;
 import com.model2.mvc.service.domain.Product;
 import com.model2.mvc.service.domain.Purchase;
+import com.model2.mvc.service.domain.Review;
 import com.model2.mvc.service.domain.User;
 import com.model2.mvc.service.product.ProductService;
 
@@ -211,28 +212,26 @@ public class ProductController {
 			//return "forward:/product/updateProductView";
 			return "/product/updateProduct";
 		}
-		
-		String ckHistory = "";
-		  
-		for (Cookie c: request.getCookies()){
-
-
-		      if (c.getName().equals("history")){
-
-		    	  ckHistory=c.getValue();       
-		      }
-		  }
-		   
-			System.out.println("cookie "+ ckHistory);
-		   Cookie cookie = new Cookie("history", prodNo+","+ckHistory);   // ÄíÅ° »ý¼º
-		   cookie.setMaxAge(60*60);   // ÇåÀç CookieÀÇ À¯Áö±â°£
-		   cookie.setPath("/");
-		   response.addCookie(cookie);
-		   //model.addAttribute("cookie", cookie);
-		   // Model °ú View ¿¬°á
-		   
-		   // ÄíÅ° => Àå¹Ù±¸´Ï -> session 
-		
+		List<Review> list = productService.getReview(prodNo);
+		System.out.println("list : "+list);
+		model.addAttribute("list", list);
+		/*
+		 * String ckHistory = "";
+		 * 
+		 * for (Cookie c: request.getCookies()){
+		 * 
+		 * 
+		 * if (c.getName().equals("history")){
+		 * 
+		 * ckHistory=c.getValue(); } }
+		 * 
+		 * System.out.println("cookie "+ ckHistory); Cookie cookie = new
+		 * Cookie("history", prodNo+","+ckHistory); // ÄíÅ° »ý¼º cookie.setMaxAge(60*60); //
+		 * ÇåÀç CookieÀÇ À¯Áö±â°£ cookie.setPath("/"); response.addCookie(cookie);
+		 * //model.addAttribute("cookie", cookie); // Model °ú View ¿¬°á
+		 * 
+		 * // ÄíÅ° => Àå¹Ù±¸´Ï -> session
+		 */		
 		return "forward:/product/getProduct.jsp";
 	}
 	

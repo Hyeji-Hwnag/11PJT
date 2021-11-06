@@ -6,6 +6,7 @@ import java.util.Map;
 import com.model2.mvc.common.Search;
 import com.model2.mvc.service.domain.Product;
 import com.model2.mvc.service.domain.Purchase;
+import com.model2.mvc.service.domain.Review;
 import com.model2.mvc.service.domain.User;
 
 
@@ -30,5 +31,7 @@ public interface PurchaseDao {
 	public Map<String, Object> getProductPurchaseList(int prodNo) throws Exception;
 	//21. 10. 14
 	public Map<String, Object> getTransactionList(Search search) throws Exception;
-	
+	//21. 11. 6
+	public void addReview(Review review) throws Exception;
+	public String validationReview(int tranNo)  throws Exception;
 }

@@ -269,6 +269,35 @@ function fncCheckStockCnt(stockCnt){
 </table>
 
 </form>
+
+
+
+<form>
+<table class="table table-hover table-striped" >
+      
+        <thead>
+          <tr>
+            <th align="left">구매자</th>
+            <th align="left">평점</th>
+            <th align="left">리뷰</th>
+          </tr>
+        </thead>
+       
+		<tbody>
+<c:forEach var="review" items="${list}">
+		
+			<c:set var="i" value="${ i+1 }" />
+			<tr>
+			  <td align="left">${review.userId}</td>
+			  <td align="left">${review.star }</td>
+			  <td align="left" >${review.reviewText }
+			  	
+			  </td>
+			</tr>
+</c:forEach>
+</tbody>
+</table>
+</form>
 </div>
 </body>
 </html>

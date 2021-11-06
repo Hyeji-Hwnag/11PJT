@@ -13,6 +13,7 @@ import com.model2.mvc.service.purchase.PurchaseDao;
 import com.model2.mvc.service.purchase.PurchaseService;
 import com.model2.mvc.service.domain.Product;
 import com.model2.mvc.service.domain.Purchase;
+import com.model2.mvc.service.domain.Review;
 import com.model2.mvc.service.product.ProductDao;
 
 @Service("purchaseServiceImpl")
@@ -80,6 +81,25 @@ public class PurchaseServiceImpl implements PurchaseService{
 	public Map<String, Object> getTransactionList(Search search) throws Exception{
 		return purchaseDao.getTransactionList(search);
 	}
+	
+	//21. 11. 6
+	public void addReview(Review review) throws Exception{
+		purchaseDao.addReview(review);
+	}
 
+	public boolean validationReview(int tranNo) throws Exception{
+		boolean result = true;
+		String res = purchaseDao.validationReview(tranNo);
+		System.out.println("Res: "+res);
+		
+		if ( res == "" || res == null || res.equals("") || res.equals(null)) {
+			result = true;
+		}else {
+			result= false;
+		}
+		return result;
+	}
+
+	
 
 }

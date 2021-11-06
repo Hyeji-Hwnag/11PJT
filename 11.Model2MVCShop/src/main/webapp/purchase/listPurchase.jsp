@@ -61,22 +61,39 @@ $(function() {
 						
 		var tranNo = td.eq(0).text().trim();
 		
-		var tranCode = td.eq(10).find("input").val();
-			
-		self.location="/purchase/updateTranCode?tranNo="+tranNo+"&tranCode="+tranCode;
+		
+		//console.log("tranNo: " +tranNo)
+		self.location="/purchase/updateTranCode?tranNo="+tranNo;
+		//self.location="/purchase/updateTranCode;
 	});
 	
-	$( ".ct_list_pop td:nth-child(1)" ).css("color" , "blue");
-	$( ".ct_list_pop td:nth-child(1)" ).on("click" , function() {
+	$( "td:nth-child(1)" ).css("color" , "blue");
+	$( "td:nth-child(1)" ).on("click" , function() {
 		self.location ="/purchase/getPurchase?tranNo="+$(this).text().trim();
 });	
 	
-	$( ".ct_list_pop td:nth-child(3)" ).css("color" , "red");
-	$( ".ct_list_pop td:nth-child(3)" ).on("click" , function() {
+	$( "td:nth-child(2)" ).css("color" , "red");
+	$( "td:nth-child(2)" ).on("click" , function() {
 		var prodNo = $(this).find("input").val();
 		self.location ="/product/getProduct?menu=search&prodNo="+prodNo;
 });	
 	
+$("td.checkT:contains('리뷰작성') ").on("click" , function() {
+	
+		var td = $(this).parent().children();
+		var prodNo = td.eq(1).find("input").val();
+		var tranNo = td.eq(0).text().trim();
+		
+		popWin 
+		//= window.open("/product/productReview.jsp?prodNo="+prodNo+"&tranNo="+tranNo,
+		= window.open("/purchase/addReviewView?prodNo="+prodNo+"&tranNo="+tranNo,
+									"popWin", 
+									"left=300,top=200,width=800,height=300,marginwidth=0,marginheight=0,"+
+									"scrollbars=no,scrolling=no,menubar=no,resizable=no");
+	 
+
+		
+	});
 	
 	
 });
@@ -106,6 +123,70 @@ $(function() {
 	       <h3>구매목록조회</h3>
 	    </div>
 <form name="detailForm">
+
+
+<table class="table table-hover table-striped" >
+      
+        <thead>
+          <tr>
+            <th align="center">주문번호</th>
+            <th align="left" >상품명</th>
+            <th align="left">구매자</th>
+            <th align="left">배송현황</th>
+            <th align="left">정보수정</th>
+          </tr>
+        </thead>
+       
+		<tbody>
+		
+		  <c:set var="i" value="0" />
+		  	<c:forEach var="purchase" items="${list}">
+		<c:set var="tranStatusCode" value="판매중"/>
+		<c:set var="tranCode" value="${fn:trim(purchase.tranCode)}"/>
+		<c:choose>
+			<c:when test="${ ! empty tranCode && tranCode eq '1'}">
+				<c:set var="tranStatusCode" value="구매완료"/>
+			</c:when>
+			<c:when test="${ ! empty tranCode && tranCode eq '2'}">
+				<c:set var="tranStatusCode" value="배송중"/>
+			</c:when>
+			<c:when test="${ ! empty tranCode && tranCode eq '3'}">
+				<c:set var="tranStatusCode" value="배송완료"/>
+			</c:when>
+			<c:when test="${ ! empty tranCode && tranCode eq '4'}">
+				<c:set var="tranStatusCode" value="리뷰작성완료"/>
+			</c:when>
+		</c:choose>
+	
+			<c:set var="i" value="${ i+1 }" />
+			<tr>
+			  <td align="center" title="Click : 주문번호 확인">${purchase.tranNo}</td>
+			  <td align="left">
+			  <input type="hidden" value="${purchase.purchaseProd.prodNo}"/>
+			 ${purchase.purchaseProd.prodName}</td>
+			  <td align="left">${user.userName}</td>
+			  <td align="left">현재 ${tranStatusCode } 상태입니다.</td>
+			  <td align="left" class="checkT">
+			  	<input type="hidden" id="tranCode" value="${purchase.tranCode }"/>
+		<c:if test="${tranStatusCode eq '배송중' && user.userId ne 'admin'}">
+		<!-- 
+		<a href="/purchase/updateTranCode?tranNo=${purchase.tranNo}&tranCode=${purchase.tranCode}">물건도착</a>
+		 -->물건도착
+		</c:if>
+		<c:if test="${tranStatusCode eq '배송완료' && user.userId ne 'admin'}">
+		<!-- 
+		<a href="/purchase/updateTranCode?tranNo=${purchase.tranNo}&tranCode=${purchase.tranCode}">물건도착</a>
+		 -->리뷰작성
+		</c:if>
+			  </td>
+			</tr>
+          </c:forEach>
+        
+        </tbody>
+      
+      </table>
+
+<%-- 
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0"	style="margin-top: 10px;">
 	<tr>
@@ -145,7 +226,7 @@ $(function() {
 		</c:choose>
 	
 	 <c:set var="i" value="${ i+1 }" />	 
-	<tr class="ct_list_pop">
+	<tr class="ct_list_pop" id="ct_list_pur">
 		<td align="center" >
 			<!-- <a href="/purchase/getPurchase?tranNo=${purchase.tranNo}">${purchase.tranNo}</a> -->
 			${purchase.tranNo}
@@ -170,14 +251,20 @@ $(function() {
 		<a href="/purchase/updateTranCode?tranNo=${purchase.tranNo}&tranCode=${purchase.tranCode}">물건도착</a>
 		 -->물건도착
 		</c:if>
-		
+		<c:if test="${tranStatusCode eq '배송완료' && user.userId ne 'admin'}">
+		<!-- 
+		<a href="/purchase/updateTranCode?tranNo=${purchase.tranNo}&tranCode=${purchase.tranCode}">물건도착</a>
+		 -->리뷰작성
+		 <i class="glyphicon glyphicon-ok" id= "${purchase.purchaseProd.prodNo}"></i>
+			<input type="hidden" value="${purchase.purchaseProd.prodNo}">
+		</c:if>
 		</td>
 	</tr>
 	<tr>
 		<td colspan="11" bgcolor="D6D7D6" height="1"></td>
 	</tr>
 	</c:forEach>
-</table>
+</table> --%>
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
 	<tr>

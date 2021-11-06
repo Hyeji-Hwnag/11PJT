@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.model2.mvc.common.Search;
 import com.model2.mvc.service.domain.Product;
+import com.model2.mvc.service.domain.Review;
 
 
 public interface ProductService {
@@ -33,5 +34,8 @@ public interface ProductService {
 	public void deleteCart(int cartId) throws Exception;
 	
 	//21. 10. 27 autoComplete
-	public List<Product> getAutoProdName(String keyword) throws Exception; 
+	public List<Product> getAutoProdName(String keyword) throws Exception;
+
+	//21. 11. 6 review
+	public List<Review> getReview(int prodNo) throws Exception;
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.model2.mvc.common.Search;
 import com.model2.mvc.service.domain.Product;
 import com.model2.mvc.service.domain.Purchase;
+import com.model2.mvc.service.domain.Review;
 import com.model2.mvc.service.domain.User;
 import com.model2.mvc.service.product.ProductDao;
 import com.model2.mvc.service.user.UserDao;
@@ -79,9 +80,7 @@ public class ProductDaoImpl implements ProductDao{
 	public Map<String,Object> getCartList(String buyerId) throws Exception {
 		
 		Map<String , Object>  map = new HashMap<String, Object>();
-		
-		
-		
+
 		List<Product> list = sqlSession.selectList("ProductMapper.getCartList", buyerId); 
 		//map.put("totalCount", sqlSession.selectOne("ProductMapper.getTotalCount", buyerId));
 
@@ -96,6 +95,11 @@ public class ProductDaoImpl implements ProductDao{
 	
 	public List<Product> getAutoProdName(String keyword) throws Exception {
 		return sqlSession.selectList("ProductMapper.getAutoProdName", keyword);
+	}
+	
+	//21. 11. 6
+	public List<Review> getReview(int prodNo) throws Exception{
+		return sqlSession.selectList("ReviewMapper.getReviewList", prodNo); 
 	}
 
 }

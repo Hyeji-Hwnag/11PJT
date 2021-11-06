@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.model2.mvc.common.Search;
 import com.model2.mvc.service.domain.Purchase;
+import com.model2.mvc.service.domain.Review;
 
 
 public interface PurchaseService {
@@ -30,4 +31,10 @@ public interface PurchaseService {
 
 	//21.10.14 
 	public Map<String, Object> getTransactionList(Search search) throws Exception;
+
+	//21. 11. 6 review 등록
+	public void addReview(Review review) throws Exception;
+	
+	//21. 11. 6 리뷰 작성 했는지 여부
+	public boolean validationReview(int tranNo) throws Exception;
 }

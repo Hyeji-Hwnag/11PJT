@@ -12,6 +12,7 @@ import com.model2.mvc.common.Search;
 import com.model2.mvc.service.product.ProductDao;
 import com.model2.mvc.service.product.ProductService;
 import com.model2.mvc.service.domain.Product;
+import com.model2.mvc.service.domain.Review;
 
 
 
@@ -128,6 +129,11 @@ public class ProductServiceImpl implements ProductService{
 	//21. 10. 27 
 	public List<Product> getAutoProdName(String keyword) throws Exception{
 		return productDao.getAutoProdName(keyword);
+	}
+	
+	//21. 11. 6
+	public List<Review> getReview(int prodNo) throws Exception{
+		return productDao.getReview(prodNo);
 	}
 }
 

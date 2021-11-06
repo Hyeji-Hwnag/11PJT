@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.model2.mvc.common.Search;
 import com.model2.mvc.service.domain.Product;
+import com.model2.mvc.service.domain.Review;
 import com.model2.mvc.service.domain.User;
 
 
@@ -39,5 +40,9 @@ public interface ProductDao {
 
 	//21. 10. 27 
 	public List<Product> getAutoProdName(String keyword) throws Exception; 
+	
+	//21. 11. 6
+	public List<Review> getReview(int prodNo) throws Exception;
+
 
 }
