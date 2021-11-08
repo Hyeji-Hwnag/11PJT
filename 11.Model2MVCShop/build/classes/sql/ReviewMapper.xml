@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ReviewMapper">
+ 	
+ 	
+	<resultMap id="reviewSelectMap" type="review">
+		<result property="reviewId" 			column="review_id" 			jdbcType="NUMERIC"/>
+		<result property="userId"	column="user_id" 		jdbcType="VARCHAR" />
+		<result property="prodNo" 	column="prod_no" 		jdbcType="NUMERIC" />
+		<result property="tranNo" 				column="tran_no" 					jdbcType="NUMERIC" />
+		<result property="reviewText" 				column="review_text" 					jdbcType="VARCHAR" />
+		<result property="star" 			column="star" 		jdbcType="NUMERIC" />
+		
+	</resultMap>
+	
+	
+	
+	
+	<!-- SQL : INSERT -->
+	<insert 	id="addReview"		parameterType="review" >
+	 	INSERT INTO REVIEWS(review_id, user_id, prod_no, tran_no, review_text, star) VALUES (seq_review_no.NEXTVAL,#{userId},#{prodNo},#{tranNo},#{reviewText},#{star})	 </insert>
+	 
+	 <!-- 리뷰 리스트 불러오기  -->
+	<select id="getReviewList" parameterType="int" resultMap="reviewSelectMap">
+  		SELECT review_id, user_id, review_text, star 
+										FROM reviews 
+										WHERE prod_no=${value} 
+	</select>
+
+	 <!-- 리뷰 있는지 유효성 검사 -->
+	 <select 	id="validationReview"	parameterType="int"	resultType="string">
+	 SELECT 
+	 user_id  
+	 FROM reviews  
+	 WHERE tran_no=#{tranNo} 
+	 </select>
+	
+</mapper>

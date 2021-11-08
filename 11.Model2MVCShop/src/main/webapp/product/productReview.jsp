@@ -54,6 +54,7 @@ $(function() {
 					{
 						//alert(data.reviewText)
 						alert(data.prodNo+" 상품의 리뷰 작성이 완료되었습니다. ")
+						opener.location.reload();
 						window.close();
 					}
 				 	
