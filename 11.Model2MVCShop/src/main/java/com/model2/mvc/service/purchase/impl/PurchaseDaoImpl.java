@@ -126,5 +126,27 @@ public class PurchaseDaoImpl implements PurchaseDao{
 		return sqlSession.selectOne("ReviewMapper.validationReview", tranNo);
 	}
 	
+	//21. 11. 9 
+	public int getTrannoSq() throws Exception{
+		//System.out.println("여기까진?");
+		//int tranNo = 
+		//System.out.println("tranNo : "+tranNo);
+		return sqlSession.selectOne("PurchaseMapper.getTrannoSq");
+	}
 	
+	//21. 11. 9 
+	public void addTranDetail(int tranNo, int prodNo, int stockCnt, String userId) throws Exception {
+		
+		Map<String , Object>  map = new HashMap<String, Object>();
+		
+		map.put("tranNo", tranNo);
+		map.put("prodNo", prodNo);
+		map.put("stockCnt", stockCnt);
+		map.put("userId", userId);
+		
+		sqlSession.insert("PurchaseMapper.addTranDetail", map);
+		
+	}
+
+
 }

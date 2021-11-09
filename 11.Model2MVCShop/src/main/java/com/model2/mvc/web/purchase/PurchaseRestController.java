@@ -9,6 +9,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +38,7 @@ import com.model2.mvc.service.domain.Product;
 import com.model2.mvc.service.domain.Purchase;
 import com.model2.mvc.service.domain.Review;
 import com.model2.mvc.service.domain.User;
+import com.model2.mvc.service.product.ProductService;
 import com.model2.mvc.service.purchase.PurchaseService;
 
 @RestController
@@ -46,6 +49,10 @@ public class PurchaseRestController {
 	@Autowired
 	@Qualifier("purchaseServiceImpl")
 	private PurchaseService purchaseService;
+	
+	@Autowired
+	@Qualifier("productServiceImpl")
+	private ProductService productService;
 	//setter Method 구현 않음
 		
 	public PurchaseRestController(){
@@ -142,6 +149,68 @@ public class PurchaseRestController {
 	
 	
 	
+	@RequestMapping( value="json/addPurchase", method=RequestMethod.POST)
+	public List<Purchase> addPurchaseView( @RequestParam(value="prodParam[]") List<String> prodParam, @RequestParam(value="stkcntParam[]") List<String> stkcntParam, @RequestParam(value="paymentOption") String paymentOption, @RequestParam(value="receiverName") String receiverName, @RequestParam(value="receiverPhone") String receiverPhone,@RequestParam(value="divyAddr") String divyAddr, @RequestParam(value="divyRequest") String divyRequest, @RequestParam(value="divyDate") String divyDate, HttpServletRequest request, HttpServletResponse response,  HttpSession session) throws Exception {
+
+		System.out.println("/purchase/addPurchase.do   : post");
+		request.setCharacterEncoding("UTF-8");
+
+		System.out.println("prodParam: "+prodParam);
+		String buyerId=((User)session.getAttribute("user")).getUserId();
+		User user = new User();
+		user.setUserId(buyerId);
+		
+		Purchase purchase = new Purchase();
+		purchase.setBuyer(user);
+		purchase.setPaymentOption(paymentOption);
+		purchase.setReceiverName(receiverName);
+		purchase.setReceiverPhone(receiverPhone);
+		purchase.setDivyAddr(divyAddr);
+		purchase.setDivyRequest(divyRequest);
+		purchase.setDivyDate(divyDate);
+		
+		// tranNo를 받아올 시퀀스를 불러와야함 
+		int tranNo = purchaseService.getTrannoSq();
+		//System.out.println(purchaseService.getTrannoSq()+"purchaseService.getTrannoSq()");
+		//System.out.println("tranNo : "+tranNo);
+		purchase.setTranNo(tranNo);
+		purchaseService.addPurchase(purchase);
+		
+		List<Purchase> list = new ArrayList<>();
+
+		int prodNo;
+		int stockCnt;
+		
+		for (int i=0; i<prodParam.size(); i++) {
+			prodNo = Integer.parseInt(prodParam.get(i));
+			stockCnt = Integer.parseInt(stkcntParam.get(i));
+			System.out.println("stockCnt : "+stockCnt);
+			purchaseService.addTranDetail(tranNo, prodNo, stockCnt, buyerId);
+			Product product = productService.getProduct(prodNo);
+			System.out.println("product: "+product);
+			System.out.println("product.getStockCnt()-stockCnt"+(product.getStockCnt()-stockCnt));
+			purchaseService.updateStockCntProduct(prodNo, product.getStockCnt()-stockCnt);
+		}
+			
+
+	      
+		return list;
+		
+		//Purchase purchase = new Purchase();
+		//return purchase;
+		
+		//System.out.println("purchase ::: "+purchase);
+		//model.addAttribute("purchase", purchase);
+		
+		//return "forward:/purchase/addPurchaseView.jsp";
+		
+	//	ModelAndView modelAndView = new ModelAndView();
+	//	modelAndView.setViewName("/product/listProduct.jsp");
+	//	modelAndView.addObject("purchase", purchase);
+	//	return modelAndView;
+		
+		
+	}
 	
 	
 	

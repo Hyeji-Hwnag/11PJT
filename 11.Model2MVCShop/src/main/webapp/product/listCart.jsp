@@ -130,7 +130,44 @@ function fncGetUserList(currentPage){
 				
 				self.location="/product/deleteCart?cartId="+cartId;
 		});
-		
+		 
+		 $( "input[name='allPurchase']" ).on("click" , function() {
+				
+			 
+			var prodParam = [];
+			var stkcntParam = [];
+			$( "input[name='chklist']:checked" ).each(function(i){
+				prodParam.push($(this).val());
+				
+			});
+			
+			$("form").attr("method" , "POST").attr("action" , "/purchase/addPurchaseView?prodNo="+prodParam).submit();
+			
+			
+			//var postData = {"checkArray" : prodParam};
+			
+			
+		   /*  $.ajax({
+		        url:"/purchase/json/addPurchaseView",
+		        type:"GET",
+		        dataType : "json",
+		        data: postData,
+		        success:function(data){
+		        	//JSON.stringify(data)
+		        	
+		        	//var list = data.list;
+		        	//alert(list)
+		            
+		        },
+		        error:function(jqXHR, textStatus, errorThrown){
+		            alert("에러 발생~~ \n" + textStatus + " : " + errorThrown);
+		            
+		        }
+		    }); */
+ 
+			 
+			 
+		});
 });	
  
 
@@ -197,7 +234,12 @@ function fncGetUserList(currentPage){
 	<c:set var="i" value="${ i+1 }" />	 
 	<tr class="ct_list_pop">
 		<td align="center">
-			${ i }
+		<c:if test="${product.stockCnt gt 0}">
+			<input type="checkbox" name="chklist" value="${product.prodNo}" />
+		</c:if>
+		<c:if test="${product.stockCnt eq 0}">
+			<input type="checkbox" name="chklist" value="${product.prodNo}" disabled/>
+			</c:if>
 		</td>
 		<td></td>
 		<td align="left">
@@ -228,7 +270,7 @@ function fncGetUserList(currentPage){
 	</tr>
 	</c:forEach>
 </table>
-
+<input type="button" value="구매" name="allPurchase"/>
 
 <!--  페이지 Navigator 끝 -->
 </form>

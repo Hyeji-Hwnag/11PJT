@@ -99,7 +99,15 @@ public class PurchaseServiceImpl implements PurchaseService{
 		}
 		return result;
 	}
-
+	//21. 11. 9 
+	public int getTrannoSq() throws Exception{
+		//System.out.println("¿À´×?");
+		return purchaseDao.getTrannoSq();
+	}
+	public void addTranDetail(int tranNo, int prodNo, int stockCnt, String userId) throws Exception {
+		purchaseDao.addTranDetail(tranNo, prodNo, stockCnt, userId);
+	}
+	
 	
 
 }

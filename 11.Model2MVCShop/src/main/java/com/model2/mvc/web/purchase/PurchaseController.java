@@ -1,6 +1,8 @@
 package com.model2.mvc.web.purchase;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -54,9 +56,19 @@ public class PurchaseController {
 
 		System.out.println("/purchase/addPurchase.do   : GET");
 		System.out.println("prodNumber: "+prodNumber);
-		int prodNo = Integer.parseInt(prodNumber);
+		
+		String[] prodNm = prodNumber.split(",");
+		List<Purchase> list = new ArrayList<>();
+		for (int i=0; i<prodNm.length; i++)
+		{
+			int prodNo = Integer.parseInt(prodNm[i]);
+			Purchase purchase = purchaseService.getPurchase(prodNo);
+			list.add(purchase);
+		}
+		System.out.println("list : "+list);
+	//	int prodNo = Integer.parseInt(prodNumber);
 		//System.out.println("prodNo: "+prodNo);
-		Purchase purchase = purchaseService.getPurchase(prodNo);
+	//	Purchase purchase = purchaseService.getPurchase(prodNo);
 		
 		//System.out.println("purchase ::: "+purchase);
 		//model.addAttribute("purchase", purchase);
@@ -65,7 +77,7 @@ public class PurchaseController {
 		
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("/purchase/addPurchaseView.jsp");
-		modelAndView.addObject("purchase", purchase);
+		modelAndView.addObject("list", list);
 		return modelAndView;
 		
 		
@@ -73,25 +85,25 @@ public class PurchaseController {
 	
 	//@RequestMapping("/addPurchase.do")
 	@RequestMapping( value="addPurchase")
-	public ModelAndView addPurchase( @ModelAttribute("purchase") Purchase purchase, @ModelAttribute("product") Product product,  @ModelAttribute("user") User user) throws Exception {
+	public void addPurchase( @ModelAttribute("purchase") Purchase purchase, @ModelAttribute("product") Product product,  @ModelAttribute("user") User user) throws Exception {
 
 		System.out.println("/purchase/addPurchase   : POST");
-
+		System.out.println("purchase : "+purchase);
 		
 		purchase.setBuyer(user);
 		purchase.setPurchaseProd(product);
 	
-		//System.out.println("purchase : "+purchase);
-		purchaseService.addPurchase(purchase);
-		purchaseService.updateStockCntProduct(product.getProdNo(), product.getStockCnt()-purchase.getStockCount());
+		System.out.println("purchase : "+purchase);
+//		purchaseService.addPurchase(purchase);
+//		purchaseService.updateStockCntProduct(product.getProdNo(), product.getStockCnt()-purchase.getStockCount());
 		
 //		
 //		model.addAttribute("purchase", purchase);
 //		return "forward:/purchase/addPurchase.jsp";
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("/purchase/addPurchase.jsp");
-		modelAndView.addObject("purchase", purchase);
-		return modelAndView;
+//		ModelAndView modelAndView = new ModelAndView();
+//		modelAndView.setViewName("/purchase/addPurchase.jsp");
+//		modelAndView.addObject("purchase", purchase);
+//		return modelAndView;
 	}
 	
 	//@RequestMapping("/getPurchase.do")

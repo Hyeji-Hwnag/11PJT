@@ -34,4 +34,8 @@ public interface PurchaseDao {
 	//21. 11. 6
 	public void addReview(Review review) throws Exception;
 	public String validationReview(int tranNo)  throws Exception;
+	
+	//21.11.9
+	public int getTrannoSq() throws Exception;
+	public void addTranDetail(int tranNo, int prodNo, int stockCnt, String userId) throws Exception;
 }

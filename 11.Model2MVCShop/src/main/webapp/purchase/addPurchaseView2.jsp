@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 
 <html lang="ko">
@@ -55,86 +54,32 @@ function fncAddPurchase() {
 $(function() {
 	//==> DOM Object GET 3가지 방법 ==> 1. $(tagName) : 2.(#id) : 3.$(.className)
 	//==> 1 과 3 방법 조합 : $("tagName.className:filter함수") 사용함.	
-	 $( "td.ct_btn01:contains('구매')" ).on("click" , function() { 	
-		
-		//fncAddPurchase();
-		//	alert("1")
-		//alert($(this).closest('div').find("input[name='stockCount']").val())
-		
-			var prodParam = [];
-			var stkcntParam = [];
-			$( "input[name='chklist']:checked" ).each(function(i){
-				
-				//alert($(this).parents('div').find("input[name='stockCount']").val())
-				prodParam.push($(this).val());
-				stkcntParam.push($(this).parents('div').find("input[name='stockCount']").val());
-			});
-			
-			var paymentOption = $("select[name='paymentOption']").val();
-			var receiverName =  $("input[name='receiverName']").val();
-			var receiverPhone =  $("input[name='receiverPhone']").val();
-			var divyAddr =  $("input[name='divyAddr']").val();
-			var divyRequest =  $("input[name='divyRequest']").val();
-			var divyDate =  $("input[name='divyDate']").val();
-			
-			
-			var postData = { "prodParam" : prodParam, 
-					"stkcntParam" :stkcntParam, 
-					"paymentOption" : paymentOption, 
-					"receiverName" : receiverName,
-					"receiverPhone" : receiverPhone,
-					"divyAddr" : divyAddr,
-					"divyRequest" : divyRequest, 
-					"divyDate" : divyDate }
-			
-				
-		     $.ajax({
-		        url:"/purchase/json/addPurchase",
-		        type:"POST",
-		        
-		        dataType : "json",
-		        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-
-		        
-		        data: postData,
-		        success:function(data){
-		        	alert(JSON.stringify(data));
-		        	
-		        	//var list = data.list;
-		        	//alert(list)
-		            
-		        },
-		        error:function(jqXHR, textStatus, errorThrown){
-		            alert("에러 발생~~ \n" + textStatus + " : " + errorThrown);
-		            
-		        }
-		    }); 
-
-
+	 $( "td.ct_btn01:contains('구매')" ).on("click" , function() {
+		//Debug..
+		//alert(  $( "td.ct_btn01:contains('가입')" ).html() );
+		fncAddPurchase();
 	});
-
-	$( "td.ct_btn01:contains('취소')" ).on("click" , function() {
+	 $( "td.ct_btn01:contains('취소')" ).on("click" , function() {
 			//Debug..
 			//alert(  $( "td.ct_btn01:contains('가입')" ).html() );
 			history.go(-1);
 		});
 	 $("input:button[name='minus']").on("click" , function() {
-			var cnt = $(this).parent().find("input[name='stockCount']").val()
-			
+			//Debug..
+			//alert(  $( "td.ct_btn01:contains('가입')" ).html() );
+			var cnt = $("input:text[name='stockCount']").val()
 			if (cnt-1 < 1)
 			{
 				alert("1개부터 구매 가능합니다.")
 			}else
-			$(this).parent().find("input[name='stockCount']").val(cnt-1)
-			
+			$("input:text[name='stockCount']").val(cnt-1)
 			
 		});
 	 $("input:button[name='plus']").on("click" , function() {
-			
-			var cnt = $(this).parent().find("input[name='stockCount']").val()
-			
-			var stockCnt = $(this).parent().find("input[name='stockCnt']").val()
-			
+			//Debug..
+			//alert(  $( "td.ct_btn01:contains('가입')" ).html() );
+			var cnt = $("input:text[name='stockCount']").val()
+			var stockCnt = $("input:hidden[name='stockCnt']").val()
 			
 			var num = cnt*1 + 1 
 			
@@ -142,8 +87,7 @@ $(function() {
 			{
 				alert("구매는 최대 " +stockCnt+ "개 까지 가능합니다.")
 			}else
-				$(this).parent().find("input[name='stockCount']").val(num)
-			
+			$("input:text[name='stockCount']").val(num)
 			
 		});
 	 
@@ -202,20 +146,15 @@ $(function() {
 	       <h3>상품구매</h3>
 	    </div>
 
-
 <form name="addPurchase" class="form-horizontal">
 
-<c:forEach var="purchase" items="${list}">
+
 
 <input type="hidden" name="prodNo" value="${purchase.purchaseProd.prodNo}" />
 <input type="hidden" name="prodName" value="${purchase.purchaseProd.prodName}" />
 
 <div class="row">
- <div class="col-md-3">
-<input type="hidden" name="stockCnt" 	value="${purchase.purchaseProd.stockCnt}" />	
-<input type="checkbox" name="chklist" value="${purchase.purchaseProd.prodNo}" />&nbsp;&nbsp;
- 
-	<img src="/images/uploadFiles/${purchase.purchaseProd.fileName}" width="200" height="200" /></div>
+ <div class="col-md-3"><img src="/images/uploadFiles/${purchase.purchaseProd.fileName}" width="300" height="300" /></div>
 <div class="col-md-9">
 
 <table width="600" border="0" cellspacing="0" cellpadding="0"	align="center" style="margin-top: 13px;">
@@ -298,14 +237,7 @@ $(function() {
 		<input type="button" name="plus" value="+"/>
 		&nbsp;(${purchase.purchaseProd.stockCnt}개)</td>
 	</tr>
-	
-</table>
-</div>
-</div>
-</c:forEach>
-
-<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 10px;">
-<tr>
+	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
 	</tr>
 	<tr>
@@ -390,6 +322,10 @@ $(function() {
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
 	</tr>
+</table>
+</div>
+</div>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 10px;">
 	<tr>
 		<td width="53%"></td>
 		<td align="center">
@@ -427,8 +363,6 @@ $(function() {
 	</tr>
 </table>
 </form>
-
-
 </div>
 </body>
 </html>

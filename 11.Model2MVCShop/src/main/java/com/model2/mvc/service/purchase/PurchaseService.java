@@ -37,4 +37,10 @@ public interface PurchaseService {
 	
 	//21. 11. 6 리뷰 작성 했는지 여부
 	public boolean validationReview(int tranNo) throws Exception;
+	
+	//21. 11. 9 tranNo 반환
+	public int getTrannoSq() throws Exception;
+	
+	//21. 11. 9 
+	public void addTranDetail(int tranNo, int prodNo, int stockCnt, String userId) throws Exception ;
 }
