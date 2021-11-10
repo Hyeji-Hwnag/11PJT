@@ -13,6 +13,7 @@ import com.model2.mvc.common.Search;
 import com.model2.mvc.service.domain.Product;
 import com.model2.mvc.service.domain.Purchase;
 import com.model2.mvc.service.domain.Review;
+import com.model2.mvc.service.domain.Trandetail;
 import com.model2.mvc.service.domain.User;
 import com.model2.mvc.service.product.ProductDao;
 import com.model2.mvc.service.purchase.PurchaseDao;
@@ -131,7 +132,7 @@ public class PurchaseDaoImpl implements PurchaseDao{
 		//System.out.println("여기까진?");
 		//int tranNo = 
 		//System.out.println("tranNo : "+tranNo);
-		return sqlSession.selectOne("PurchaseMapper.getTrannoSq");
+		return sqlSession.selectOne("TrandetailMapper.getTrannoSq");
 	}
 	
 	//21. 11. 9 
@@ -144,8 +145,21 @@ public class PurchaseDaoImpl implements PurchaseDao{
 		map.put("stockCnt", stockCnt);
 		map.put("userId", userId);
 		
-		sqlSession.insert("PurchaseMapper.addTranDetail", map);
+		sqlSession.insert("TrandetailMapper.addTranDetail", map);
 		
+	}
+	
+	//21. 11. 10
+	public List<Trandetail> getTranDetailList(int tranNo) throws Exception{
+		System.out.println("dhsl?????????????????????????????///");
+		Map<String , Object>  map = new HashMap<String, Object>();
+		List<Trandetail> list = sqlSession.selectList("TrandetailMapper.getTranDetailList", tranNo); 
+		
+		//System.out.println("list: "+list);
+		//map.put("list", list);
+		
+
+		return list;
 	}
 
 

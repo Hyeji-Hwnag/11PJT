@@ -45,16 +45,7 @@
 	 	INSERT INTO transaction(tran_no, buyer_id, payment_option, receiver_name, receiver_phone, demailaddr, dlvy_request, tran_status_code, order_data, dlvy_date) VALUES  (#{tranNo},#{buyer.userId},#{paymentOption},#{receiverName},#{receiverPhone},#{divyAddr},#{divyRequest},1,SYSDATE,#{divyDate})	
 	</insert>
 	
-	<!-- 21.11.08 addTranDetail -->
-	<insert 	id="addTranDetail"		parameterType="map" >
-	 	INSERT INTO trandetail(td_no, tran_no, prod_no, stock_cnt, user_id) VALUES  (seq_td_no.NEXTVAL,#{tranNo},#{prodNo},#{stockCnt},#{userId})	
-	</insert>
 	
-	<!-- 21.11.09 tranNo 받아오기  -->
-	<select id="getTrannoSq" resultType="int" >
-		select seq_transaction_tran_no.NEXTVAL FROM DUAL
-	
-	</select>
 
 	
 	<select 	id="getPurchase"	parameterType="int"	resultMap="purchaseSelectMap">

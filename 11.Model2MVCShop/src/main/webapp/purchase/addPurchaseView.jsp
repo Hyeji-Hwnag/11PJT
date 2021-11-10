@@ -98,10 +98,20 @@ $(function() {
 		        
 		        data: postData,
 		        success:function(data){
-		        	alert(JSON.stringify(data));
+		        	//alert(JSON.stringify(data));
 		        	
 		        	//var list = data.list;
 		        	//alert(list)
+		        	
+		        	$.each(data, function(index, item) { // µ•¿Ã≈Õ =item
+					//alert(item.buyer.userId);
+		        		$('.modal-body').append(item)
+		        	});
+		        
+		        //	$('.modal-body').html(JSON.stringify(data));
+		             // Display Modal
+		            $('#empModal').modal('show'); 
+		             
 		            
 		        },
 		        error:function(jqXHR, textStatus, errorThrown){
@@ -213,7 +223,7 @@ $(function() {
 <div class="row">
  <div class="col-md-3">
 <input type="hidden" name="stockCnt" 	value="${purchase.purchaseProd.stockCnt}" />	
-<input type="checkbox" name="chklist" value="${purchase.purchaseProd.prodNo}" />&nbsp;&nbsp;
+<input type="checkbox" name="chklist" checked="true" value="${purchase.purchaseProd.prodNo}" />&nbsp;&nbsp;
  
 	<img src="/images/uploadFiles/${purchase.purchaseProd.fileName}" width="200" height="200" /></div>
 <div class="col-md-9">
@@ -428,7 +438,31 @@ $(function() {
 </table>
 </form>
 
+<div class="modal fade" id="empModal" role="dialog">
+    <div class="modal-dialog">
+ 
+     <!-- Modal content-->
+     <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">User Info</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+      
+      	
+      
+      
+      
+      
+ 
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+     </div>
+    </div>
+   </div>
 
-</div>
+
 </body>
 </html>

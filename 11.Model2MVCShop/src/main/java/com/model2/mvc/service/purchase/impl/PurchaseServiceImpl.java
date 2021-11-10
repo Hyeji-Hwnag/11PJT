@@ -14,6 +14,7 @@ import com.model2.mvc.service.purchase.PurchaseService;
 import com.model2.mvc.service.domain.Product;
 import com.model2.mvc.service.domain.Purchase;
 import com.model2.mvc.service.domain.Review;
+import com.model2.mvc.service.domain.Trandetail;
 import com.model2.mvc.service.product.ProductDao;
 
 @Service("purchaseServiceImpl")
@@ -108,6 +109,9 @@ public class PurchaseServiceImpl implements PurchaseService{
 		purchaseDao.addTranDetail(tranNo, prodNo, stockCnt, userId);
 	}
 	
-	
-
+	//21. 11. 10
+	public List<Trandetail> getTranDetailList(int tranNo) throws Exception{
+		return purchaseDao.getTranDetailList(tranNo);
+		
+	}
 }

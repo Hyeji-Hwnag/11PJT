@@ -19,6 +19,7 @@
 		<typeAlias alias="purchase" type="com.model2.mvc.service.domain.Purchase" />
 		<typeAlias alias="search" type="com.model2.mvc.common.Search" />
 		<typeAlias alias="review" type="com.model2.mvc.service.domain.Review" />
+		<typeAlias alias="trandetail" type="com.model2.mvc.service.domain.Trandetail" />
 	</typeAliases>
 	
 	 <!-- SQL Definition :: file include -->
@@ -27,6 +28,7 @@
 		<mapper resource="sql/ProductMapper.xml"/>
 		<mapper resource="sql/PurchaseMapper.xml"/>
 		<mapper resource="sql/ReviewMapper.xml"/>
+		<mapper resource="sql/TrandetailMapper.xml"/>
 	</mappers>
 
 </configuration>

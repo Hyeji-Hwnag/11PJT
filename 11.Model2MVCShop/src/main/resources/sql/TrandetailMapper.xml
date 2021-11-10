@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="TrandetailMapper">
+ 
+ 
+	<resultMap id="trandetailSelectMap" type="trandetail">
+		<result property="tdNo" 			column="td_no" 			jdbcType="NUMERIC"/>
+		<result property="tranNo"	column="tran_no" 		jdbcType="NUMERIC" />
+		<result property="prodNo" 	column="prod_no" 		jdbcType="NUMERIC" />
+		<result property="stockCnt" 				column="stock_cnt" 					jdbcType="NUMERIC" />
+		<result property="buyerId" 				column="user_id" 					jdbcType="VARCHAR" />
+		
+	</resultMap>
+	
+	
+	<!-- 21.11.08 addTranDetail -->
+	<insert 	id="addTranDetail"		parameterType="map" >
+	 	INSERT INTO trandetail(td_no, tran_no, prod_no, stock_cnt, user_id) VALUES  (seq_td_no.NEXTVAL,#{tranNo},#{prodNo},#{stockCnt},#{userId})	
+	</insert>
+	
+	<!-- 21.11.09 tranNo 받아오기  -->
+	<select id="getTrannoSq" resultType="int" >
+		select seq_transaction_tran_no.NEXTVAL FROM DUAL
+	
+	</select>
+	
+	
+	<!-- 21.11.10 getTranDetail -->
+	<select 	id="getTranDetailList"	parameterType="int"	resultMap="trandetailSelectMap">
+	 SELECT 
+	TD_NO, TRAN_NO, PROD_NO, STOCK_CNT, USER_ID 
+	 FROM trandetail WHERE TRAN_NO=#{value}
+		
+	 </select>
+	
+	
+</mapper>

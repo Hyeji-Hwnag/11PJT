@@ -1,10 +1,12 @@
 package com.model2.mvc.service.purchase;
 
+import java.util.List;
 import java.util.Map;
 
 import com.model2.mvc.common.Search;
 import com.model2.mvc.service.domain.Purchase;
 import com.model2.mvc.service.domain.Review;
+import com.model2.mvc.service.domain.Trandetail;
 
 
 public interface PurchaseService {
@@ -43,4 +45,7 @@ public interface PurchaseService {
 	
 	//21. 11. 9 
 	public void addTranDetail(int tranNo, int prodNo, int stockCnt, String userId) throws Exception ;
+	
+	//21. 11. 10 
+	public List<Trandetail> getTranDetailList(int tranNo) throws Exception;
 }

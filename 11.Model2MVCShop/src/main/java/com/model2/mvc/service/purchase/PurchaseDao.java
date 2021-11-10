@@ -7,6 +7,7 @@ import com.model2.mvc.common.Search;
 import com.model2.mvc.service.domain.Product;
 import com.model2.mvc.service.domain.Purchase;
 import com.model2.mvc.service.domain.Review;
+import com.model2.mvc.service.domain.Trandetail;
 import com.model2.mvc.service.domain.User;
 
 
@@ -38,4 +39,5 @@ public interface PurchaseDao {
 	//21.11.9
 	public int getTrannoSq() throws Exception;
 	public void addTranDetail(int tranNo, int prodNo, int stockCnt, String userId) throws Exception;
+	public List<Trandetail> getTranDetailList(int tranNo) throws Exception;
 }
