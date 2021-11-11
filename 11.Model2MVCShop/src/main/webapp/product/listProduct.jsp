@@ -193,7 +193,7 @@ $(function() {
 	
 	$("td.checkT:contains('판매관리')").on("click" , function() {
 		
-		 var checkBtn = $(this);
+			var checkBtn = $(this);
 			var tr = checkBtn.parent();
 			var td = tr.children();
 						

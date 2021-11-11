@@ -8,57 +8,62 @@ import com.model2.mvc.service.domain.*;
 public class Trandetail {
 	
 	private int tdNo;
-	private int tranNo;
-	private int prodNo;
+	private Purchase tranPurchase;
+	private Product tranProduct;
+	private User tranUser;
 	private int stockCnt;
-	private String buyerId;
+	
+	//private int tranNo;
+	//private int prodNo;
+	
+	//private String buyerId;
 	
 	
+	@Override
+	public String toString() {
+		return "PurchaseVO [tdNo=" + tdNo + ", tranPurchase=" + tranPurchase
+				+ ", tranProduct=" + tranProduct + ", tranUser=" + tranUser
+				+ ", stockCnt=" + stockCnt+ "]";
+	}
+
 	public int getTdNo() {
 		return tdNo;
 	}
 
-	public int getTranNo() {
-		return tranNo;
+	public Purchase getTranPurchase() {
+		return tranPurchase;
 	}
 
-	public int getProdNo() {
-		return prodNo;
+	public Product getTranProduct() {
+		return tranProduct;
+	}
+
+	public User getTranUser() {
+		return tranUser;
 	}
 
 	public int getStockCnt() {
 		return stockCnt;
 	}
 
-	public String getBuyerId() {
-		return buyerId;
-	}
-
 	public void setTdNo(int tdNo) {
 		this.tdNo = tdNo;
 	}
 
-	public void setTranNo(int tranNo) {
-		this.tranNo = tranNo;
+	public void setTranPurchase(Purchase tranPurchase) {
+		this.tranPurchase = tranPurchase;
 	}
 
-	public void setProdNo(int prodNo) {
-		this.prodNo = prodNo;
+	public void setTranProduct(Product tranProduct) {
+		this.tranProduct = tranProduct;
+	}
+
+	public void setTranUser(User tranUser) {
+		this.tranUser = tranUser;
 	}
 
 	public void setStockCnt(int stockCnt) {
 		this.stockCnt = stockCnt;
-	}
-
-	public void setBuyerId(String buyerId) {
-		this.buyerId = buyerId;
-	}
-	
-	@Override
-	public String toString() {
-		return "PurchaseVO [tdNo=" + tdNo + ", tranNo=" + tranNo
-				+ ", prodNo=" + prodNo + ", stockCnt=" + stockCnt
-				+ ", buyerId=" + buyerId+ "]";
 	}
 
 	

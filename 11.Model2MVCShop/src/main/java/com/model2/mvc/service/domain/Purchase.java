@@ -20,6 +20,7 @@ public class Purchase {
 	private String tranCode;
 	private int tranNo;
 	private int stockCount;
+	private int totalPrice;
 	
 	public Purchase(){
 	}
@@ -108,5 +109,13 @@ public class Purchase {
 				+ ", receiverName=" + receiverName + ", receiverPhone="
 				+ receiverPhone + ", tranCode=" + tranCode + ", tranNo="
 				+ tranNo + "]";
+	}
+
+	public int getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(int totalPrice) {
+		this.totalPrice = totalPrice;
 	}
 }

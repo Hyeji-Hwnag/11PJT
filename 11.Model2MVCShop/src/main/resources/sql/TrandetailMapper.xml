@@ -6,13 +6,47 @@
 
 <mapper namespace="TrandetailMapper">
  
+ 	
  
+		
 	<resultMap id="trandetailSelectMap" type="trandetail">
 		<result property="tdNo" 			column="td_no" 			jdbcType="NUMERIC"/>
-		<result property="tranNo"	column="tran_no" 		jdbcType="NUMERIC" />
+		<!--  <result property="tranNo"	column="tran_no" 		jdbcType="NUMERIC" />
 		<result property="prodNo" 	column="prod_no" 		jdbcType="NUMERIC" />
+		<result property="buyerId" 				column="user_id" 					jdbcType="VARCHAR" />-->
 		<result property="stockCnt" 				column="stock_cnt" 					jdbcType="NUMERIC" />
-		<result property="buyerId" 				column="user_id" 					jdbcType="VARCHAR" />
+		
+		<!-- <collection property="tranProduct" resultMap="TranProduct"/>
+		<collection property="tranPurchase" resultMap="TranPurchase"/>
+		<collection property="tranUser" resultMap="TranUser"/> -->
+		
+		
+		<association property="tranProduct"  javaType="product">
+			<id property="prodNo" column="prod_no" jdbcType="NUMERIC"/>
+			<result property="prodName" column="prod_name" jdbcType="VARCHAR"/>
+		</association>
+		
+		<association property="tranUser"  javaType="user">
+			<id property="userId" column="buyer_id" jdbcType="VARCHAR"/>
+			<result property="userName" column="user_name" jdbcType="VARCHAR"/>
+
+		</association>
+		
+		<association property="tranPurchase"  javaType="purchase">
+		
+			<id property="tranNo" 			column="tran_no" jdbcType="NUMERIC"/>
+				<result property="paymentOption"	column="payment_option" 	jdbcType="VARCHAR" />
+				<result property="receiverName" 	column="receiver_name" 		jdbcType="VARCHAR" />
+				<result property="receiverPhone" 	column="receiver_phone" 	jdbcType="VARCHAR" />
+				<result property="divyAddr" 		column="demailaddr" 		jdbcType="VARCHAR" />
+				<result property="divyRequest" 		column="dlvy_request" 		jdbcType="VARCHAR" />
+				<result property="tranCode" 		column="tran_status_code" 	jdbcType="VARCHAR" />
+				<result property="orderDate" 		column="order_data" 		jdbcType="DATE" />
+				<result property="divyDate" 		column="dlvy_date" 			jdbcType="DATE" />
+				<result property="totalPrice" 		column="total_price" 			jdbcType="NUMERIC"/>
+		</association>
+		
+		
 		
 	</resultMap>
 	
@@ -32,10 +66,27 @@
 	<!-- 21.11.10 getTranDetail -->
 	<select 	id="getTranDetailList"	parameterType="int"	resultMap="trandetailSelectMap">
 	 SELECT 
-	TD_NO, TRAN_NO, PROD_NO, STOCK_CNT, USER_ID 
-	 FROM trandetail WHERE TRAN_NO=#{value}
+	td.TD_NO, td.TRAN_NO, td.PROD_NO, td.STOCK_CNT, td.USER_ID, t.receiver_name, t.receiver_phone, t.payment_option, p.prod_name 
+	 FROM trandetail td, transaction t, product p WHERE td.TRAN_NO=#{value} AND td.tran_no=t.tran_no AND td.prod_no = p.prod_no 
+
 		
 	 </select>
 	
+	
+	
+	<select id="getPurchaseList" parameterType="map" resultMap="trandetailSelectMap">
+  		SELECT *
+  		FROM ( SELECT inner_table.*, ROWNUM AS row_seq
+  						FROM ( SELECT t.tran_no, t.buyer_id, u.user_name, u.cell_phone, t.tran_status_code, p.prod_name, p.prod_no, t.stock_count  
+										FROM transaction t, users u, product p, trandetail td  
+										WHERE t.buyer_id = u.user_id AND td.prod_no=p.prod_no  
+										AND u.user_id = #{buyerId}
+										ORDER BY tran_no  ) inner_table
+  						WHERE ROWNUM <![CDATA[<=]]> #{search.currentPage}*#{search.pageSize} )
+  		WHERE row_seq BETWEEN (#{search.currentPage}-1)*#{search.pageSize}+1
+  		AND #{search.currentPage}*#{search.pageSize}
+</select>
+
+
 	
 </mapper>

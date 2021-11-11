@@ -72,12 +72,12 @@ public class PurchaseRestController {
 	
 	@RequestMapping( value="json/kakaopay")
 	@ResponseBody
-	public String kakaopay(HttpServletRequest request) {
-		System.out.println("111");
+	public String kakaopay(HttpServletRequest request, HttpSession session) {
+		
 		try {
 			int price = Integer.parseInt(request.getParameter("price"));
-			String prodName = request.getParameter("prodName");
-			
+			String prodName = ((User)session.getAttribute("user")).getUserId();
+			//String buyerId=((User)session.getAttribute("user")).getUserId();
 			URL url = new URL("https://kapi.kakao.com/v1/payment/ready");
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("POST");
@@ -151,7 +151,7 @@ public class PurchaseRestController {
 	
 	
 	@RequestMapping( value="json/addPurchase", method=RequestMethod.POST)
-	public List<Trandetail> addPurchaseView( @RequestParam(value="prodParam[]") List<String> prodParam, @RequestParam(value="stkcntParam[]") List<String> stkcntParam, @RequestParam(value="paymentOption") String paymentOption, @RequestParam(value="receiverName") String receiverName, @RequestParam(value="receiverPhone") String receiverPhone,@RequestParam(value="divyAddr") String divyAddr, @RequestParam(value="divyRequest") String divyRequest, @RequestParam(value="divyDate") String divyDate, HttpServletRequest request, HttpServletResponse response,  HttpSession session) throws Exception {
+	public List<Trandetail> addPurchaseView( @RequestParam(value="prodParam[]") List<String> prodParam, @RequestParam(value="stkcntParam[]") List<String> stkcntParam, @RequestParam(value="paymentOption") String paymentOption, @RequestParam(value="receiverName") String receiverName, @RequestParam(value="receiverPhone") String receiverPhone,@RequestParam(value="divyAddr") String divyAddr, @RequestParam(value="divyRequest") String divyRequest, @RequestParam(value="divyDate") String divyDate, @RequestParam(value="totalPrice") String totalPrice, HttpServletRequest request, HttpServletResponse response,  HttpSession session) throws Exception {
 
 		System.out.println("/purchase/addPurchase.do   : post");
 		request.setCharacterEncoding("UTF-8");
@@ -169,7 +169,8 @@ public class PurchaseRestController {
 		purchase.setDivyAddr(divyAddr);
 		purchase.setDivyRequest(divyRequest);
 		purchase.setDivyDate(divyDate);
-		
+		purchase.setTotalPrice(Integer.parseInt(totalPrice));
+		System.out.println("totalPrice :::::::::::::" + Integer.parseInt(totalPrice));
 		int tranNo = purchaseService.getTrannoSq();
 
 		purchase.setTranNo(tranNo);
@@ -183,7 +184,7 @@ public class PurchaseRestController {
 		for (int i=0; i<prodParam.size(); i++) {
 			prodNo = Integer.parseInt(prodParam.get(i));
 			stockCnt = Integer.parseInt(stkcntParam.get(i));
-			//System.out.println("stockCnt : "+stockCnt);
+			System.out.println("stockCnt : "+stockCnt);
 			purchaseService.addTranDetail(tranNo, prodNo, stockCnt, buyerId);
 			Product product = productService.getProduct(prodNo);
 			//System.out.println("product: "+product);

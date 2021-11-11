@@ -63,11 +63,19 @@ $(function() {
 		
 			var prodParam = [];
 			var stkcntParam = [];
+			var price = 0;
 			$( "input[name='chklist']:checked" ).each(function(i){
-				
+				var chk = $(this).val();
+				var amount = $(this).parents('div').find("input[name='"+chk+"']").val()
 				//alert($(this).parents('div').find("input[name='stockCount']").val())
 				prodParam.push($(this).val());
-				stkcntParam.push($(this).parents('div').find("input[name='stockCount']").val());
+				stkcntParam.push(amount);
+				
+				
+				var pr = $(this).parent().find("input[name='price']").val()
+				price += pr * amount;
+				
+				
 			});
 			
 			var paymentOption = $("select[name='paymentOption']").val();
@@ -85,7 +93,8 @@ $(function() {
 					"receiverPhone" : receiverPhone,
 					"divyAddr" : divyAddr,
 					"divyRequest" : divyRequest, 
-					"divyDate" : divyDate }
+					"divyDate" : divyDate,
+					"totalPrice" : price }
 			
 				
 		     $.ajax({
@@ -98,17 +107,40 @@ $(function() {
 		        
 		        data: postData,
 		        success:function(data){
-		        	//alert(JSON.stringify(data));
+		        	//주문번호 넣고싶당. 
+		        	//$('.modal-body').append("주문번호 : " +data.tranPurchase.tranNo)"+${item.tranProduct.prodName}+""+${item.stockCnt}+"
+		        	//var div="<div class='container'><div class='page-header'>"+
+		        	//"<h3 class='text-info'>구매내역</h3></div>";
 		        	
-		        	//var list = data.list;
-		        	//alert(list)
+		        	
 		        	
 		        	$.each(data, function(index, item) { // 데이터 =item
 					//alert(item.buyer.userId);
-		        		$('.modal-body').append(item)
+		        		
+		        		var div="";
+		        		
+		        		div += "<div class='row'>"+
+		        	  		"<div class='col-xs-4 col-md-2'><strong>상품명</strong></div>"+
+		        			"<div class='col-xs-8 col-md-4'>"+item.tranProduct.prodName+"</div>"+
+		        		"</div>"+		        		
+		        		"<hr/>"+		        		
+		        		"<div class='row'>"+
+		        	  		"<div class='col-xs-4 col-md-2 '><strong>상품수량</strong></div>"+
+		        			"<div class='col-xs-8 col-md-4'>"+item.stockCnt+"</div>"+
+		        		"</div>"+		        		
+		        		"<hr/>"+		      
+		        		"<br/></div>";
+		        		
+		         	
+		        	$('.modal-body').append(div);
+		        	
+		        	
+		        	
+		        		//$('.modal-body').append("<br>구매한 상품 : "+item.tranProduct.prodNo + ", 구매한 상품명 : "+item.tranProduct.prodName)
+		        		
 		        	});
-		        
-		        //	$('.modal-body').html(JSON.stringify(data));
+		        	//$('.modal-body').append("</div>");
+		        	//	$('.modal-body').html(JSON.stringify(data));
 		             // Display Modal
 		            $('#empModal').modal('show'); 
 		             
@@ -129,19 +161,19 @@ $(function() {
 			history.go(-1);
 		});
 	 $("input:button[name='minus']").on("click" , function() {
-			var cnt = $(this).parent().find("input[name='stockCount']").val()
+			var cnt = $(this).parent().find("#stockCount").val()
 			
 			if (cnt-1 < 1)
 			{
 				alert("1개부터 구매 가능합니다.")
 			}else
-			$(this).parent().find("input[name='stockCount']").val(cnt-1)
+			$(this).parent().find("#stockCount").val(cnt-1)
 			
 			
 		});
 	 $("input:button[name='plus']").on("click" , function() {
 			
-			var cnt = $(this).parent().find("input[name='stockCount']").val()
+			var cnt = $(this).parent().find("#stockCount").val()
 			
 			var stockCnt = $(this).parent().find("input[name='stockCnt']").val()
 			
@@ -152,7 +184,7 @@ $(function() {
 			{
 				alert("구매는 최대 " +stockCnt+ "개 까지 가능합니다.")
 			}else
-				$(this).parent().find("input[name='stockCount']").val(num)
+				$(this).parent().find("#stockCount").val(num)
 			
 			
 		});
@@ -160,14 +192,23 @@ $(function() {
 	 
 	 $("#apibtn").click(function(){
 		 
-		 var pr =  $("input[name='price']").val()
-		 var amount = $("input[name='stockCount']").val()
-		 var price = pr * amount;
+		
+		 var price=0;
 		 
 		 
+		 $( "input[name='chklist']:checked" ).each(function(i){
+				var chk = $(this).val();
+				//alert($(this).parents('div').find("input[name='stockCount']").val())
+				var amount = $(this).parents('div').find("input[name='"+chk+"']").val()
+				var pr = $(this).parent().find("input[name='price']").val()
+				
+				price += pr * amount;
+			});
+		 
+		
 		 $.ajax({
 			url:"/purchase/json/kakaopay",
-			data : { price : price, prodName : $("input[name='prodName']").val()
+			data : { price : price, prodName : "user" 
 				 },
 			dataType : "json",
 			success: function(data){
@@ -177,13 +218,117 @@ $(function() {
 				//window.open(box, "kakao", "width=480px, height=700px");
 				
 				window.open(box);
-				fncAddPurchase();
+				
+				
+
+	        	//$.each(data, function(index, item) { 
+	        	//	fncAddPurchase();
+	        	//});
+				//$("forms[0]").attr("method" , "POST").attr("action" , "/purchase/addPurchase").submit();
+				
+				
+
+				var prodParam = [];
+				var stkcntParam = [];
+				$( "input[name='chklist']:checked" ).each(function(i){
+					var a = $(this).val();
+					//alert($(this).parents('div').find("input[name='stockCount']").val())
+					prodParam.push($(this).val());
+					stkcntParam.push($(this).parents('div').find("input[name='"+a+"']").val());
+				});
+				
+				var paymentOption = $("select[name='paymentOption']").val();
+				var receiverName =  $("input[name='receiverName']").val();
+				var receiverPhone =  $("input[name='receiverPhone']").val();
+				var divyAddr =  $("input[name='divyAddr']").val();
+				var divyRequest =  $("input[name='divyRequest']").val();
+				var divyDate =  $("input[name='divyDate']").val();
+				
+				
+				var postData = { "prodParam" : prodParam, 
+						"stkcntParam" :stkcntParam, 
+						"paymentOption" : paymentOption, 
+						"receiverName" : receiverName,
+						"receiverPhone" : receiverPhone,
+						"divyAddr" : divyAddr,
+						"divyRequest" : divyRequest, 
+						"divyDate" : divyDate }
+				
+					
+			     $.ajax({
+			        url:"/purchase/json/addPurchase",
+			        type:"POST",
+			        
+			        dataType : "json",
+			        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+
+			        
+			        data: postData,
+			        success:function(data){
+			        	//주문번호 넣고싶당. 
+			        	//$('.modal-body').append("주문번호 : " +data.tranPurchase.tranNo)"+${item.tranProduct.prodName}+""+${item.stockCnt}+"
+			        	//var div="<div class='container'><div class='page-header'>"+
+			        	//"<h3 class='text-info'>구매내역</h3></div>";
+			        	
+			        	
+			        	
+			        	$.each(data, function(index, item) { // 데이터 =item
+						//alert(item.buyer.userId);
+			        		
+			        		var div="";
+			        		
+			        		div += "<div class='row'>"+
+			        	  		"<div class='col-xs-4 col-md-2'><strong>상품명</strong></div>"+
+			        			"<div class='col-xs-8 col-md-4'>"+item.tranProduct.prodName+"</div>"+
+			        		"</div>"+		        		
+			        		"<hr/>"+		        		
+			        		"<div class='row'>"+
+			        	  		"<div class='col-xs-4 col-md-2 '><strong>상품수량</strong></div>"+
+			        			"<div class='col-xs-8 col-md-4'>"+item.stockCnt+"</div>"+
+			        		"</div>"+		        		
+			        		"<hr/>"+		      
+			        		"<br/></div>";
+			        		
+			         	
+			        	$('.modal-body').append(div);
+			        	
+			        	
+			        	
+			        		//$('.modal-body').append("<br>구매한 상품 : "+item.tranProduct.prodNo + ", 구매한 상품명 : "+item.tranProduct.prodName)
+			        		
+			        	});
+			        	//$('.modal-body').append("</div>");
+			        	//	$('.modal-body').html(JSON.stringify(data));
+			             // Display Modal
+			            $('#empModal').modal('show'); 
+			             
+			            
+			        },
+			        error:function(jqXHR, textStatus, errorThrown){
+			            alert("에러 발생~~ \n" + textStatus + " : " + errorThrown);
+			            
+			        }
+			    }); 
+				
+				
+				
+				
 			},
 			error:function(error){
 				alert(error);
 			}
 		 });
 	 });
+	 
+	 
+	 $("#empModal").on('hide.bs.modal', function(e){
+
+			self.location="/purchase/listPurchase"
+
+			e.stopImmediatePropagation();
+
+		});
+	 
 	 
 });	
 
@@ -213,22 +358,22 @@ $(function() {
 	    </div>
 
 
-<form name="addPurchase" class="form-horizontal">
 
 <c:forEach var="purchase" items="${list}">
+<form name="addPurchase" class="form-horizontal">
 
 <input type="hidden" name="prodNo" value="${purchase.purchaseProd.prodNo}" />
 <input type="hidden" name="prodName" value="${purchase.purchaseProd.prodName}" />
 
 <div class="row">
- <div class="col-md-3">
-<input type="hidden" name="stockCnt" 	value="${purchase.purchaseProd.stockCnt}" />	
-<input type="checkbox" name="chklist" checked="true" value="${purchase.purchaseProd.prodNo}" />&nbsp;&nbsp;
- 
-	<img src="/images/uploadFiles/${purchase.purchaseProd.fileName}" width="200" height="200" /></div>
-<div class="col-md-9">
+<div class="col-md-3">
+	<input type="hidden" name="stockCnt" 	value="${purchase.purchaseProd.stockCnt}" />	
+	<input type="checkbox" name="chklist" checked="true" value="${purchase.purchaseProd.prodNo}" />&nbsp;&nbsp;
+	<input type="hidden" name="price" value="${purchase.purchaseProd.price}" />
+	 <img src="/images/uploadFiles/${purchase.purchaseProd.fileName}" width="200" height="200" /></div>
+	<div class="col-md-9">
 
-<table width="600" border="0" cellspacing="0" cellpadding="0"	align="center" style="margin-top: 13px;">
+	<table width="600" border="0" cellspacing="0" cellpadding="0"	align="center" style="margin-top: 13px;">
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
 	</tr>
@@ -304,7 +449,7 @@ $(function() {
 		<td class="ct_write01">
 		<input type="button" name="minus" value="-"/>
 		<input type="hidden" name="stockCnt" 	value="${purchase.purchaseProd.stockCnt}" />
-		<input type="text" name="stockCount" 	class="ct_input_g" style="width: 80px; height: 19px" maxLength="20" value="1" />
+		<input type="text" id="stockCount" name="${purchase.purchaseProd.prodNo}" 	class="ct_input_g" style="width: 80px; height: 19px" maxLength="20" value="1" />
 		<input type="button" name="plus" value="+"/>
 		&nbsp;(${purchase.purchaseProd.stockCnt}개)</td>
 	</tr>

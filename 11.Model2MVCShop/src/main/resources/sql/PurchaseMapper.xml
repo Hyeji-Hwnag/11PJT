@@ -22,6 +22,7 @@
 		<result property="orderDate" 		column="order_data" 		jdbcType="DATE" />
 		<result property="divyDate" 		column="dlvy_date" 			jdbcType="DATE" />
 		<result property="stockCount" 		column="stock_count" 			jdbcType="NUMERIC"/>
+		<result property="totalPrice" 		column="total_price" 			jdbcType="NUMERIC"/>
 		<association property="purchaseProd"  javaType="product">
 			<id property="prodNo" column="prod_no" jdbcType="NUMERIC"/>
 			<result property="prodName" column="prod_name" jdbcType="VARCHAR"/>
@@ -37,15 +38,59 @@
 		</association>
 		<association property="purchaseProd" javaType="product">
 			<result property="prodNo" column="prod_no" jdbcType="NUMERIC" />
-		</association> -->
+		</association> 
+		<collection property="purchase" resultMap="purchaseSelectMap"/>
+		<collection property="com.model2.mvc.service.domain.product" resultMap="productSelectMap"/>
+		-->
 	</resultMap>
-	
+	<resultMap id="trandetailSelectMap" type="trandetail">
+		<result property="tdNo" 			column="td_no" 			jdbcType="NUMERIC"/>
+		<result property="tranNo"	column="tran_no" 		jdbcType="NUMERIC" />
+		<result property="prodNo" 	column="prod_no" 		jdbcType="NUMERIC" />
+		<result property="stockCnt" 				column="stock_cnt" 					jdbcType="NUMERIC" />
+		<result property="buyerId" 				column="user_id" 					jdbcType="VARCHAR" />
+		
+		
+	</resultMap>
+	<resultMap id="productSelect" type="product">
+		<result property="prodNo" 			column="prod_no" 			jdbcType="NUMERIC"/>
+		<result property="prodName"	column="prod_name" 		jdbcType="VARCHAR" />
+		<result property="prodDetail" 	column="prod_detail" 		jdbcType="VARCHAR" />
+		<result property="manuDate" 				column="manufacture_day" 					jdbcType="VARCHAR" />
+		<result property="price" 				column="price" 					jdbcType="NUMERIC" />
+		<result property="fileName" 			column="image_file" 		jdbcType="VARCHAR" />
+		<result property="regDate" 		column="reg_date" 			jdbcType="DATE" />
+		<result property="stockCnt" 		column="stock_cnt" 			jdbcType="NUMERIC" />
+		<result property="proTranCode"	column="tran_status_code"	jdbcType="VARCHAR"/>
+		
+	</resultMap>
 	<!-- SQL : INSERT -->
 	<insert 	id="addPurchase"		parameterType="purchase" >
-	 	INSERT INTO transaction(tran_no, buyer_id, payment_option, receiver_name, receiver_phone, demailaddr, dlvy_request, tran_status_code, order_data, dlvy_date) VALUES  (#{tranNo},#{buyer.userId},#{paymentOption},#{receiverName},#{receiverPhone},#{divyAddr},#{divyRequest},1,SYSDATE,#{divyDate})	
+	 	INSERT INTO transaction(tran_no, buyer_id, payment_option, receiver_name, receiver_phone, demailaddr, dlvy_request, tran_status_code, order_data, dlvy_date, total_price) VALUES  (#{tranNo},#{buyer.userId},#{paymentOption},#{receiverName},#{receiverPhone},#{divyAddr},#{divyRequest},1,SYSDATE,#{divyDate},#{totalPrice})	
 	</insert>
 	
 	
+	<!-- 21.11.08 addTranDetail -->
+	<insert 	id="addTranDetail"		parameterType="map" >
+	 	INSERT INTO trandetail(td_no, tran_no, prod_no, stock_cnt, user_id) VALUES  (seq_td_no.NEXTVAL,#{tranNo},#{prodNo},#{stockCnt},#{userId})	
+	</insert>
+	
+	<!-- 21.11.09 tranNo 받아오기  -->
+	<select id="getTrannoSq" resultType="int" >
+		select seq_transaction_tran_no.NEXTVAL FROM DUAL
+	
+	</select>
+	
+	<!-- 21.11.10 getTranDetail 
+	 SELECT 
+	TD_NO, TRAN_NO, PROD_NO, STOCK_CNT, USER_ID 
+	 FROM trandetail WHERE TRAN_NO=#{value}
+	 -->
+	<select 	id="getTranDetailList"	parameterType="int"	resultMap="trandetailSelectMap, purchaseSelectMap, productSelect">
+	SELECT 
+	td.TD_NO, td.TRAN_NO, td.PROD_NO, td.STOCK_CNT, td.USER_ID, t.receiver_name, t.receiver_phone, t.payment_option, p.prod_name 
+	 FROM trandetail td, transaction t, product p WHERE td.TRAN_NO=#{value} AND td.tran_no=t.tran_no AND td.prod_no = p.prod_no 
+	 </select>
 
 	
 	<select 	id="getPurchase"	parameterType="int"	resultMap="purchaseSelectMap">
