@@ -205,7 +205,16 @@ public class PurchaseRestController {
 		
 	}
 	
-	
+
+	@RequestMapping( value="json/getTranDetail/{tranNo}", method=RequestMethod.GET )
+	public List<Trandetail> getTranDetail( @PathVariable String tranNo ) throws Exception{
+		
+		System.out.println("/purchase/json/getTranDetail : GET");
+		List<Trandetail> list=purchaseService.getTranDetailList(Integer.parseInt(tranNo));
+		//Business Logic
+		return list;
+	}
+
 	
 	
 }

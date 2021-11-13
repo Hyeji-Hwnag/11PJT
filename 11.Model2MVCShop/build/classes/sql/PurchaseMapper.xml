@@ -21,7 +21,7 @@
 		<result property="tranCode" 		column="tran_status_code" 	jdbcType="VARCHAR" />
 		<result property="orderDate" 		column="order_data" 		jdbcType="DATE" />
 		<result property="divyDate" 		column="dlvy_date" 			jdbcType="DATE" />
-		<result property="stockCount" 		column="stock_count" 			jdbcType="NUMERIC"/>
+		
 		<result property="totalPrice" 		column="total_price" 			jdbcType="NUMERIC"/>
 		<association property="purchaseProd"  javaType="product">
 			<id property="prodNo" column="prod_no" jdbcType="NUMERIC"/>
@@ -102,7 +102,7 @@
 	 
 	<select 	id="getPurchase2"	parameterType="int"	resultMap="purchaseSelectMap">
 	 SELECT 
-	 t.tran_no, t.prod_no, p.prod_name, t.payment_option, t.receiver_name, t.receiver_phone, t.demailaddr, t.dlvy_request, t.tran_status_code, t.order_data, t.dlvy_date, t.stock_count 
+	 t.tran_no, p.prod_no, p.prod_name, t.payment_option, t.receiver_name, t.receiver_phone, t.demailaddr, t.dlvy_request, t.tran_status_code, t.order_data, t.dlvy_date, t.stock_count 
 	 FROM transaction t, product p
 	 WHERE t.tran_no=#{tranNo} AND t.prod_no = p.prod_no
 		
@@ -149,11 +149,10 @@
 <select id="getPurchaseList" parameterType="map" resultMap="purchaseSelectMap">
   		SELECT *
   		FROM ( SELECT inner_table.*, ROWNUM AS row_seq
-  						FROM ( SELECT t.tran_no, t.buyer_id, u.user_name, u.cell_phone, t.tran_status_code, p.prod_name, p.prod_no, t.stock_count  
-										FROM transaction t, users u, product p 
-										WHERE t.buyer_id = u.user_id AND t.prod_no=p.prod_no  
-										AND u.user_id = #{buyerId}
-										ORDER BY tran_no  ) inner_table
+  						FROM ( select tran_no, total_price, order_data, dlvy_date, tran_status_code  
+  						from transaction 
+  						where buyer_id = #{buyerId} 
+						ORDER BY tran_no  ) inner_table
   						WHERE ROWNUM <![CDATA[<=]]> #{search.currentPage}*#{search.pageSize} )
   		WHERE row_seq BETWEEN (#{search.currentPage}-1)*#{search.pageSize}+1
   		AND #{search.currentPage}*#{search.pageSize}
@@ -162,9 +161,9 @@
 <select id="getTransactionList" parameterType="search" resultMap="purchaseSelectMap">
   		SELECT *
   		FROM ( SELECT inner_table.*, ROWNUM AS row_seq
-  						FROM ( SELECT t.tran_no, t.prod_no, p.prod_name, t.buyer_id, t.tran_status_code, t.order_data, t.dlvy_date, t.stock_count 
-										FROM transaction t, product p 
-										WHERE tran_status_code=1 AND t.prod_no=p.prod_no 
+  						FROM ( SELECT tran_no, buyer_id, tran_status_code, order_data, dlvy_date 
+										FROM transaction 
+										WHERE tran_status_code=1
 										ORDER BY order_data  ) inner_table
   						WHERE ROWNUM <![CDATA[<=]]> #{currentPage}*#{pageSize} )
   		WHERE row_seq BETWEEN (#{currentPage}-1)*#{pageSize}+1

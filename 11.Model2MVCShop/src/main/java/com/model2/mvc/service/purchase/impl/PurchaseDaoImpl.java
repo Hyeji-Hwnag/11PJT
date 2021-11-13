@@ -155,10 +155,10 @@ public class PurchaseDaoImpl implements PurchaseDao{
 		Map<String , Object>  map = new HashMap<String, Object>();
 		List<Trandetail> list = sqlSession.selectList("TrandetailMapper.getTranDetailList", tranNo); 
 		
-		//System.out.println("list: "+list);
+		System.out.println("list: "+list);
 		//map.put("list", list);
 		
-
+			
 		return list;
 	}
 

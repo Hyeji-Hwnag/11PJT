@@ -23,6 +23,7 @@ import com.model2.mvc.common.Search;
 import com.model2.mvc.service.domain.Product;
 import com.model2.mvc.service.domain.Purchase;
 import com.model2.mvc.service.domain.Review;
+import com.model2.mvc.service.domain.Trandetail;
 import com.model2.mvc.service.domain.User;
 import com.model2.mvc.service.purchase.PurchaseService;
 
@@ -112,15 +113,14 @@ public class PurchaseController {
 		
 		System.out.println("/purchase/getPurchase    : GET/POST");
 
-		Purchase purchase = purchaseService.getPurchase2(tranNo);
+		//Purchase purchase = purchaseService.getPurchase2(tranNo);
+		List<Trandetail> list = purchaseService.getTranDetailList(tranNo);
 		
-		System.out.println("purchase : "+purchase);
-		//System.out.println("purchase.getDivyRequest : "+purchase);
-//		model.addAttribute("purchase", purchase);
-//		return "forward:/purchase/getPurchase.jsp"; //// jsp getPurchase·Î º¸³¿ 
+		
+		System.out.println("list: "+list);
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("/purchase/getPurchase.jsp");
-		modelAndView.addObject("purchase", purchase);
+		modelAndView.addObject("list", list);
 		return modelAndView;
 	}
 	

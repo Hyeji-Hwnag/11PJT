@@ -80,6 +80,39 @@ $(function() {
 	
 $("td.checkT:contains('리뷰작성') ").on("click" , function() {
 	
+	
+	// 1. 모달창에서 뿌려줄 것 
+	
+	
+	
+	
+	
+	$.ajax( 
+			{
+				url : "/purchase/json/addReviewView/"+tranNo,
+				method : "GET" ,
+				dataType : "json" ,
+				headers : {
+					"Accept" : "application/json",
+					"Content-Type" : "application/json"
+				},
+				success : function(JSONData , status) {
+					var displayValue="";
+					$.each(JSONData, function(index, item) {
+					
+					displayValue += "<h6>"
+									+"상품명 : "+item.tranProduct.prodName+"<br/>"
+									+"가격 : "+item.tranProduct.price+"<br/>"
+									+"수량 : "+item.stockCnt+"<br/>"
+									+"</h6>";
+					});
+					$("h6").remove();
+					$( "#"+tranNo+"" ).html(displayValue);
+				}
+		});
+	
+	/* 
+	
 		var td = $(this).parent().children();
 		var prodNo = td.eq(1).find("input").val();
 		var tranNo = td.eq(0).text().trim();
@@ -91,8 +124,35 @@ $("td.checkT:contains('리뷰작성') ").on("click" , function() {
 									"left=300,top=200,width=800,height=300,marginwidth=0,marginheight=0,"+
 									"scrollbars=no,scrolling=no,menubar=no,resizable=no");
 	 
-
+ */
 		
+	});
+		
+	$(  "td:nth-child(6) > i" ).on("click" , function() {
+		var tranNo = $(this).next().val();
+		$.ajax( 
+				{
+					url : "/purchase/json/getTranDetail/"+tranNo ,
+					method : "GET" ,
+					dataType : "json" ,
+					headers : {
+						"Accept" : "application/json",
+						"Content-Type" : "application/json"
+					},
+					success : function(JSONData , status) {
+						var displayValue="";
+						$.each(JSONData, function(index, item) {
+						
+						displayValue += "<h6>"
+										+"상품명 : "+item.tranProduct.prodName+"<br/>"
+										+"가격 : "+item.tranProduct.price+"<br/>"
+										+"수량 : "+item.stockCnt+"<br/>"
+										+"</h6>";
+						});
+						$("h6").remove();
+						$( "#"+tranNo+"" ).html(displayValue);
+					}
+			});
 	});
 	
 	
@@ -130,10 +190,11 @@ $("td.checkT:contains('리뷰작성') ").on("click" , function() {
         <thead>
           <tr>
             <th align="center">주문번호</th>
-            <th align="left" >상품명</th>
-            <th align="left">구매자</th>
+            <th align="left">금액</th>
+            <th align="left">구매일</th>
             <th align="left">배송현황</th>
             <th align="left">정보수정</th>
+            <th align="left">상세정보</th>
           </tr>
         </thead>
        
@@ -162,9 +223,9 @@ $("td.checkT:contains('리뷰작성') ").on("click" , function() {
 			<tr>
 			  <td align="center" title="Click : 주문번호 확인">${purchase.tranNo}</td>
 			  <td align="left">
-			  <input type="hidden" value="${purchase.purchaseProd.prodNo}"/>
-			 ${purchase.purchaseProd.prodName}</td>
-			  <td align="left">${user.userName}</td>
+			  <input type="hidden" class="chkprodNo" value="${purchase.purchaseProd.prodNo}"/>
+			 ${purchase.totalPrice}</td>
+			  <td align="left">${purchase.orderDate}</td>
 			  <td align="left">현재 ${tranStatusCode } 상태입니다.</td>
 			  <td align="left" class="checkT">
 			  	<input type="hidden" id="tranCode" value="${purchase.tranCode }"/>
@@ -179,92 +240,16 @@ $("td.checkT:contains('리뷰작성') ").on("click" , function() {
 		 -->리뷰작성
 		</c:if>
 			  </td>
+			  <td align="left">
+			  	<i class="glyphicon glyphicon-ok" id= "${purchase.tranNo}"></i>
+			  	<input type="hidden" value="${purchase.tranNo}">
+			  </td>
 			</tr>
           </c:forEach>
         
         </tbody>
       
       </table>
-
-<%-- 
-
-<table width="100%" border="0" cellspacing="0" cellpadding="0"	style="margin-top: 10px;">
-	<tr>
-		<td colspan="11">전체  ${resultPage.totalCount } 건수, 현재 ${resultPage.currentPage}  페이지</td>
-	</tr>
-	<tr>
-		<td class="ct_list_b" width="100">주문번호</td>
-		<td class="ct_line02"></td>
-		<td class="ct_list_b" width="150">상품명</td>
-		<td class="ct_line02"></td>
-		<td class="ct_list_b" width="150">구매자</td>
-		<td class="ct_line02"></td>
-		<td class="ct_list_b">배송현황</td>
-		<td class="ct_line02"></td>
-		<td class="ct_list_b">정보수정</td>
-	</tr>
-	<tr>
-		<td colspan="11" bgcolor="808285" height="1"></td>
-	</tr>
-
-
-
-
-	<c:forEach var="purchase" items="${list}">
-		<c:set var="tranStatusCode" value="판매중"/>
-		<c:set var="tranCode" value="${fn:trim(purchase.tranCode)}"/>
-		<c:choose>
-			<c:when test="${ ! empty tranCode && tranCode eq '1'}">
-				<c:set var="tranStatusCode" value="구매완료"/>
-			</c:when>
-			<c:when test="${ ! empty tranCode && tranCode eq '2'}">
-				<c:set var="tranStatusCode" value="배송중"/>
-			</c:when>
-			<c:when test="${ ! empty tranCode && tranCode eq '3'}">
-				<c:set var="tranStatusCode" value="배송완료"/>
-			</c:when>
-		</c:choose>
-	
-	 <c:set var="i" value="${ i+1 }" />	 
-	<tr class="ct_list_pop" id="ct_list_pur">
-		<td align="center" >
-			<!-- <a href="/purchase/getPurchase?tranNo=${purchase.tranNo}">${purchase.tranNo}</a> -->
-			${purchase.tranNo}
-		</td>
-		<td></td>
-		<td align="left">
-			<!-- <a href="/user/getUser?userId=${user.userId}">${user.userId}</a>
-			 -->
-			 <input type="hidden" value="${purchase.purchaseProd.prodNo}"/>
-			 ${purchase.purchaseProd.prodName}
-		</td>
-		<td></td>
-		<td align="left">${user.userName}</td>
-		<td></td>
-
-		<td align="left">현재 ${tranStatusCode } 상태입니다.</td>
-		<td></td>
-		<td align="left" class="checkT">
-		<input type="hidden" id="tranCode" value="${purchase.tranCode }"/>
-		<c:if test="${tranStatusCode eq '배송중' && user.userId ne 'admin'}">
-		<!-- 
-		<a href="/purchase/updateTranCode?tranNo=${purchase.tranNo}&tranCode=${purchase.tranCode}">물건도착</a>
-		 -->물건도착
-		</c:if>
-		<c:if test="${tranStatusCode eq '배송완료' && user.userId ne 'admin'}">
-		<!-- 
-		<a href="/purchase/updateTranCode?tranNo=${purchase.tranNo}&tranCode=${purchase.tranCode}">물건도착</a>
-		 -->리뷰작성
-		 <i class="glyphicon glyphicon-ok" id= "${purchase.purchaseProd.prodNo}"></i>
-			<input type="hidden" value="${purchase.purchaseProd.prodNo}">
-		</c:if>
-		</td>
-	</tr>
-	<tr>
-		<td colspan="11" bgcolor="D6D7D6" height="1"></td>
-	</tr>
-	</c:forEach>
-</table> --%>
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
 	<tr>

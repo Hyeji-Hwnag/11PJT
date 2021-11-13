@@ -90,7 +90,16 @@ $(function() {
 
 
 
-<table width="100%" border="0" cellspacing="0" cellpadding="0"	style="margin-top: 13px;">
+<c:forEach var="trandetail" items="${list}">
+<div class="row">
+	<div class="col-md-3" >
+		 <img src="/images/uploadFiles/${trandetail.tranProduct.fileName}" width="100" height="100" align="right"/>
+	</div>
+	
+	
+<div class="col-md-9">
+<table width="100%" border="0" cellspacing="0" cellpadding="0"	style="margin-top: 1px;">
+
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
 	</tr>
@@ -103,7 +112,7 @@ $(function() {
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td width="105">
-					${purchase.purchaseProd.prodNo}</td>
+					${trandetail.tranProduct.prodNo}</td>
 					<td></td>
 				</tr>
 			</table>
@@ -117,7 +126,17 @@ $(function() {
 			상품명 <img	src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
-		<td class="ct_write01">${purchase.purchaseProd.prodName}</td>
+		<td class="ct_write01">${trandetail.tranProduct.prodName}</td>
+	</tr>
+	<tr>
+		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
+	</tr>
+		<tr>
+		<td width="104" class="ct_write">
+			 가격 <img	src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
+		</td>
+		<td bgcolor="D6D6D6" width="1"></td>
+		<td class="ct_write01">${trandetail.tranProduct.price}원</td>
 	</tr>
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
@@ -127,11 +146,19 @@ $(function() {
 			수량 <img	src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
-		<td class="ct_write01">${purchase.stockCount}개</td>
+		<td class="ct_write01">${trandetail.stockCnt}개</td>
 	</tr>
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
 	</tr>
+	</table>
+	</div>
+	</div>
+</c:forEach>
+
+<div class="row">
+<table width="100%" border="0" cellspacing="0" cellpadding="0"	style="margin-top: 1px;">
+
 	<tr>
 		<td width="104" class="ct_write">
 			구매자아이디 <img	src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
@@ -147,7 +174,7 @@ $(function() {
 		<td width="104" class="ct_write">구매방법</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-				${fn:trim(purchase.paymentOption) eq '1' ? '현금구매' : '신용구매'}
+				${fn:trim(list[0].tranPurchase.paymentOption) eq '1' ? '현금구매' : '신용구매'}
 		</td>
 	</tr>
 	<tr>
@@ -156,7 +183,7 @@ $(function() {
 	<tr>
 		<td width="104" class="ct_write">구매자이름</td>
 		<td bgcolor="D6D6D6" width="1"></td>
-		<td class="ct_write01">${purchase.receiverName}</td>
+		<td class="ct_write01">${list[0].tranPurchase.receiverName}</td>
 	</tr>
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
@@ -164,7 +191,7 @@ $(function() {
 	<tr>
 		<td width="104" class="ct_write">구매자연락처</td>
 		<td bgcolor="D6D6D6" width="1"></td>
-		<td class="ct_write01">${purchase.receiverPhone}</td>
+		<td class="ct_write01">${list[0].tranPurchase.receiverPhone}</td>
 	</tr>
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
@@ -172,7 +199,7 @@ $(function() {
 	<tr>
 		<td width="104" class="ct_write">구매자주소</td>
 		<td bgcolor="D6D6D6" width="1"></td>
-		<td class="ct_write01">${purchase.divyAddr}</td>
+		<td class="ct_write01">${list[0].tranPurchase.divyAddr}</td>
 	</tr>
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
@@ -180,7 +207,7 @@ $(function() {
 	<tr>
 		<td width="104" class="ct_write">구매요청사항</td>
 		<td bgcolor="D6D6D6" width="1"></td>
-		<td class="ct_write01">${purchase.divyRequest}</td>
+		<td class="ct_write01">${list[0].tranPurchase.divyRequest}</td>
 	</tr>
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
@@ -188,7 +215,7 @@ $(function() {
 	<tr>
 		<td width="104" class="ct_write">배송희망일</td>
 		<td bgcolor="D6D6D6" width="1"></td>
-		<td class="ct_write01">${purchase.divyDate}</td>
+		<td class="ct_write01">${list[0].tranPurchase.divyDate}</td>
 	</tr>
 
 	<tr>
@@ -198,14 +225,18 @@ $(function() {
 	<tr>
 		<td width="104" class="ct_write">주문일</td>
 		<td bgcolor="D6D6D6" width="1"></td>
-		<td class="ct_write01">${purchase.orderDate}</td>
+		<td class="ct_write01">${list[0].tranPurchase.orderDate}</td>
 	</tr>
 
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
 	</tr>
+	</table>
 	
-</table>
+	
+	
+	
+</div>	
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0"	style="margin-top: 10px;">
 	<tr>
@@ -216,7 +247,7 @@ $(function() {
 				<%-- 0929 / trancode가 1 -> 구매중
 								일 때에만 '수정'버튼 활성화 됨 
 					 --%>
-					<c:if test="${fn:trim(purchase.tranCode) eq '1'}">
+					<%-- <c:if test="${fn:trim(list[0].tranPurchase.tranCode) eq '1'}">
 						<td width="17" height="23">
 							<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 						</td>
@@ -227,7 +258,7 @@ $(function() {
 						<td width="14" height="23">
 							<img src="/images/ct_btnbg03.gif" width="14" height="23"/>
 						</td>
-					</c:if>
+					</c:if> --%>
 						<td width="30"></td>
 						<td width="17" height="23">
 							<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
@@ -246,6 +277,7 @@ $(function() {
 		</td>
 	</tr>
 </table>
+
 </div>
 </body>
 </html>
