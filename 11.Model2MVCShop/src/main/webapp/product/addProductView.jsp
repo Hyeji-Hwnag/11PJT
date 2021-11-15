@@ -45,7 +45,9 @@
 
 
 <script type="text/javascript">
-
+ 
+	
+	
 function fncAddProduct(){
 	//Form 유효성 검증
  	//var name = document.detailForm.prodName.value;
@@ -57,7 +59,12 @@ function fncAddProduct(){
 	var manuDate = $("input[name='manuDate']").val();
 	var price = $("input[name='price']").val();
 	var uploadFile = $("input[name='uploadFile']").val();
+	var checkR = $("#checkR").val();
 	
+	if(checkR == 'false'){
+		alert("사용 불가능한 상품명입니다.");
+		return;
+	}
 	if(name == null || name.length<1){
 		alert("상품명은 반드시 입력하여야 합니다.");
 		return;
@@ -87,6 +94,40 @@ $(function() {
 		//alert(  $( "td.ct_btn01:contains('가입')" ).html() );
 		fncAddProduct();
 	});
+	
+
+
+		//var checkAjaxSetTimeout;
+		    $('#keyup').keyup(function(){
+		    var inputLength = $(this).val().length;
+		    //alert($(this).val())
+		       
+		        if ( inputLength > 1) {
+		        	
+		            var id = $(this).val();
+		            
+		            // ajax 실행
+		            $.ajax({
+		                type : 'POST',
+		                contentType: "application/x-www-form-urlencoded;",  
+		                url : '/product/json/checkProductDuplication/',
+		               	data : {prodName : id},
+		                success : function(result) {
+		                	
+		                    
+		                    if (result) {
+		                        $("#result_id_msg").html(id+": 사용 가능한 상품명 입니다.");
+		                        $("#checkR").val(result);
+		                    } else {
+		                        $("#result_id_msg").html(id+": 사용 불가능한 상품명 입니다.");
+		                        $("#checkR").val(result);
+		                    }
+		                }
+		            }); // end ajax
+		            } //end setTimeout
+		       
+		    }); // end keyup
+
 });	
 
 $(function() {
@@ -176,8 +217,8 @@ $( function() {
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td width="105">
-						<input 	type="text" name="prodName" class="ct_input_bg" 
-										style="width:100px; height:19px"  maxLength="20" readonly>
+						<input 	type="text" id="keyup" name="prodName" class="ct_input_bg" 
+										style="width:100px; height:19px"  maxLength="20" >
 					</td>
 					<td>
 						<table border="0" cellspacing="0" cellpadding="0">
@@ -185,15 +226,19 @@ $( function() {
 								<td width="4" height="21">
 									<img src="/images/ct_btng01.gif" width="4" height="21"/>
 								</td>
-								<td align="center" background="/images/ct_btng02.gif" class="ct_btn" style="padding-top:3px;">
-								<!--  
-									<a href="javascript:fncCheckDuplication();" id="btnCmfID">상품명 중복확인</a>-->
+								<!-- <td align="center" background="/images/ct_btng02.gif" class="ct_btn" style="padding-top:3px;">
+								 
+									<a href="javascript:fncCheckDuplication();" id="btnCmfID">상품명 중복확인</a>
 									상품명중복확인
+								</td>-->
+								<td align="center" id="result_id_msg" background="/images/ct_btng02.gif" class="ct_btn" style="padding-top:3px;">
+								
 								</td>
 								<td width="4" height="21">
 									<img src="/images/ct_btng03.gif" width="4" height="21"/>
 								</td>
 							</tr>
+							
 						</table>
 					</td>
 				</tr>
@@ -255,6 +300,7 @@ $( function() {
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
 	</tr>
+	<input type="hidden" id="checkR"/>
 </table>
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0"	style="margin-top: 10px;">

@@ -73,63 +73,73 @@ $(function() {
 });	
 	
 	$( "td:nth-child(2)" ).css("color" , "red");
-	$( "td:nth-child(2)" ).on("click" , function() {
-		var prodNo = $(this).find("input").val();
-		self.location ="/product/getProduct?menu=search&prodNo="+prodNo;
-});	
+	
 	
 $("td.checkT:contains('리뷰작성') ").on("click" , function() {
 	
 	
 	// 1. 모달창에서 뿌려줄 것 
-	
-	
-	
-	
-	
-	$.ajax( 
-			{
-				url : "/purchase/json/addReviewView/"+tranNo,
-				method : "GET" ,
-				dataType : "json" ,
-				headers : {
-					"Accept" : "application/json",
-					"Content-Type" : "application/json"
-				},
-				success : function(JSONData , status) {
-					var displayValue="";
-					$.each(JSONData, function(index, item) {
-					
-					displayValue += "<h6>"
-									+"상품명 : "+item.tranProduct.prodName+"<br/>"
-									+"가격 : "+item.tranProduct.price+"<br/>"
-									+"수량 : "+item.stockCnt+"<br/>"
-									+"</h6>";
-					});
-					$("h6").remove();
-					$( "#"+tranNo+"" ).html(displayValue);
-				}
-		});
-	
-	/* 
-	
-		var td = $(this).parent().children();
-		var prodNo = td.eq(1).find("input").val();
+	// ===> 모달창에서 보여주면 좀 이상해짐 ㅜ.ㅜ..? 
+			// 걍 팝업창으로 변경하꺄 , ,, ,,,,,,,,,,        ,        ,, ,, , 
+		var checkBtn = $(this);
+		var tr = checkBtn.parent();
+		var td = tr.children();
+						
 		var tranNo = td.eq(0).text().trim();
+		var userId =  $("input[name='userId']").val();
 		
-		popWin 
-		//= window.open("/product/productReview.jsp?prodNo="+prodNo+"&tranNo="+tranNo,
-		= window.open("/purchase/addReviewView?prodNo="+prodNo+"&tranNo="+tranNo,
-									"popWin", 
-									"left=300,top=200,width=800,height=300,marginwidth=0,marginheight=0,"+
-									"scrollbars=no,scrolling=no,menubar=no,resizable=no");
-	 
- */
+		$.ajax( 
+				{
+					url : "/purchase/json/getTranDetail/"+tranNo ,
+					method : "GET" ,
+					dataType : "json" ,
+					headers : {
+						"Accept" : "application/json",
+						"Content-Type" : "application/json"
+					},
+					success : function(JSONData , status) {
+						
+						var div="";
+						$.each(JSONData, function(index, item) {
+						
+							
+							div += "<form id='detailForm"+index+"' class='productReview'>"+
+							"주문번호 :"+tranNo+" 상품코드 :"+item.tranProduct.prodNo+" 평점 : "+
+							"<select 	name='star'		class='ct_input_g' style='width: 100px; height: 19px' maxLength='20'>"+
+										"<option value='0' selected='selected'>☆☆☆☆☆</option>"+
+										"<option value='1' >★☆☆☆☆</option>"+
+										"<option value='2' >★★☆☆☆</option>"+
+										"<option value='3' >★★★☆☆</option>"+
+										"<option value='4' >★★★★☆</option>"+
+										"<option value='5' >★★★★★</option>"+
+							"</select>"+
+						   "<textarea name='reviewText' class='form-control' rows='2'></textarea>"+
+						   " <input type='hidden' name='prodNo' value='"+item.tranProduct.prodNo+"'/>"+
+						    "<input type='hidden' name='userId' value='"+userId+"'/>"+
+						    "<input type='hidden' name='tranNo' value='"+tranNo+"'/>"+
+						   
+						"</form>";
+						      
+						
+						
+						//alert(item.tranProduct.prodNo)
+						});
+						$('.modal-body').html(div);
+						$('#empModal').modal('show'); 
+					}
+					
+			});
+	
+	
+	//$('#empModal').modal('show'); 
+	
+
 		
 	});
 		
 	$(  "td:nth-child(6) > i" ).on("click" , function() {
 		var tranNo = $(this).next().val();
+		
 		$.ajax( 
 				{
 					url : "/purchase/json/getTranDetail/"+tranNo ,
@@ -153,6 +163,40 @@ $("td.checkT:contains('리뷰작성') ").on("click" , function() {
 						$( "#"+tranNo+"" ).html(displayValue);
 					}
 			});
+	});
+	
+	$(".btn-default").on("click" , function() {
+		$(".productReview").each(function(index, item){ 
+			
+			//var params = $("#detailForm"+index).find("input[name='prodNo']").val();
+			
+			$.ajax(
+					{
+						url : "/purchase/json/addReview",
+						method : "POST",
+					 	dataType : "json",
+					 	contentType: "application/x-www-form-urlencoded; charset=UTF-8", 
+						data :{
+						 star : $("#detailForm"+index).find("select[name='star']").val(),
+						prodNo : $("#detailForm"+index).find("input[name='prodNo']").val(),
+						userId : $("#detailForm"+index).find("input[name='userId']").val(),
+						tranNo : $("#detailForm"+index).find("input[name='tranNo']").val(),
+						reviewText : $("#detailForm"+index).find("textarea[name='reviewText']").val()
+				 		},
+						success : function(data)
+								{
+									//alert(data.reviewText)
+									//alert(" 상품의 리뷰 작성이 완료되었습니다. ")
+									
+									$('#empModal').modal('hide'); 
+									window.location.reload();
+								}
+							 	
+					});//end ajax
+		});//end each
+
+		
+		
 	});
 	
 	
@@ -243,6 +287,7 @@ $("td.checkT:contains('리뷰작성') ").on("click" , function() {
 			  <td align="left">
 			  	<i class="glyphicon glyphicon-ok" id= "${purchase.tranNo}"></i>
 			  	<input type="hidden" value="${purchase.tranNo}">
+			  	<input type="hidden" name="userId" value="${user.userId}">
 			  </td>
 			</tr>
           </c:forEach>
@@ -264,6 +309,30 @@ $("td.checkT:contains('리뷰작성') ").on("click" , function() {
 </form>
 
 </div>
+
+<div class="modal fade" id="empModal" role="dialog">
+    <div class="modal-dialog">
+ 
+     <!-- Modal content-->
+     <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">한줄평</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+      
+      	
+      
+      
+      
+ 
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-default" >이거 누르면 저장 </button>
+      </div>
+     </div>
+    </div>
+   </div>
 
 </body>
 </html>

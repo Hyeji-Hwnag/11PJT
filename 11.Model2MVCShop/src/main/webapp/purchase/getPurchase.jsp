@@ -174,7 +174,16 @@ $(function() {
 		<td width="104" class="ct_write">구매방법</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-				${fn:trim(list[0].tranPurchase.paymentOption) eq '1' ? '현금구매' : '신용구매'}
+		<c:if test="${fn:trim(list[0].tranPurchase.paymentOption) == '1'}">
+		현금구매
+		</c:if>
+		<c:if test="${fn:trim(list[0].tranPurchase.paymentOption) == '2'}">
+		신용카드
+		</c:if>
+		<c:if test="${fn:trim(list[0].tranPurchase.paymentOption) == '3'}">
+		카카오페이
+		</c:if>
+				
 		</td>
 	</tr>
 	<tr>

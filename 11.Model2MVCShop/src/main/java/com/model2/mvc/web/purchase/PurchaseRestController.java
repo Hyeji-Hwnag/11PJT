@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,8 +76,9 @@ public class PurchaseRestController {
 	public String kakaopay(HttpServletRequest request, HttpSession session) {
 		
 		try {
+			
 			int price = Integer.parseInt(request.getParameter("price"));
-			String prodName = ((User)session.getAttribute("user")).getUserId();
+			String prodName = request.getParameter("prodName");
 			//String buyerId=((User)session.getAttribute("user")).getUserId();
 			URL url = new URL("https://kapi.kakao.com/v1/payment/ready");
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -118,17 +120,20 @@ public class PurchaseRestController {
 
 	
 	@RequestMapping( value="json/addReview", method=RequestMethod.POST)
+	@ResponseBody
 	public Review addReview( HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		System.out.println("/purchase/addReview   : POST");
 		request.setCharacterEncoding("UTF-8");
+		
+		
 		
 		int star = Integer.parseInt(request.getParameter("star"));
 		int prodNo = Integer.parseInt(request.getParameter("prodNo"));
 		int tranNo = Integer.parseInt(request.getParameter("tranNo"));
 		String userId = request.getParameter("userId");
 		String reviewText = request.getParameter("reviewText");
-		
+				
 		Review review = new Review();
 		review.setProdNo(prodNo);
 		review.setTranNo(tranNo);
@@ -141,9 +146,11 @@ public class PurchaseRestController {
 		purchaseService.addReview(review);
 		
 		Purchase purchase = purchaseService.getPurchase2(review.getTranNo());
+		System.out.println("get: "+purchase);
 		purchase.setTranCode("4"); 
 		purchaseService.updateTranCode(purchase);  
 		
+		System.out.println("update: "+purchase);
 		
 		return review;
 	}

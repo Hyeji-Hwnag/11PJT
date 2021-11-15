@@ -40,6 +40,7 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	
 
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 
 
 
@@ -88,6 +89,28 @@ $(function() {
 		});
 	 
 });	
+Kakao.init('51615d81a030d0475e576eb41e443c14');
+function sendLink() {
+	var prodName = $("input[name='prodName']").val();
+	var prodNo = $("input[name='prodNo']").val();
+ 	 Kakao.Link.sendDefault({
+	      objectType: 'text',
+	      text: '당그니 상품명: '+prodName,
+	      link: {
+	        mobileWebUrl: 'http://127.0.0.1:8080/product/getProduct?menu=search&prodNo=${product.prodNo}',
+	        webUrl: 'http://127.0.0.1:8080/product/getProduct?menu=search&prodNo=${product.prodNo}',
+	      },
+	    }) 
+	    
+	    
+	 
+    
+    
+}
+
+
+
+
 
 /* 
 function fncCheckStockCnt(stockCnt){
@@ -129,7 +152,7 @@ function fncCheckStockCnt(stockCnt){
 	
 	<div class="container">
 <div class="page-header text-info">
-	       <h3>상품상세정보</h3>
+	       <h3>상품상세정보 <a href="javascript:sendLink()"><img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png" /></a></h3>
 	    </div>
  <form name="detailForm">
 
@@ -160,6 +183,7 @@ function fncCheckStockCnt(stockCnt){
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">${product.prodName}</td>
+		<input type='hidden' name='prodName' value='${product.prodName}'/>
 	</tr>
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
@@ -269,7 +293,6 @@ function fncCheckStockCnt(stockCnt){
 </table>
 
 </form>
-
 
 
 <form>

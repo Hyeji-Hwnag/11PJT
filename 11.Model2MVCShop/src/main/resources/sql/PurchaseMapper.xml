@@ -101,11 +101,14 @@
 	 </select>
 	 
 	<select 	id="getPurchase2"	parameterType="int"	resultMap="purchaseSelectMap">
-	 SELECT 
+	 <!-- SELECT 
 	 t.tran_no, p.prod_no, p.prod_name, t.payment_option, t.receiver_name, t.receiver_phone, t.demailaddr, t.dlvy_request, t.tran_status_code, t.order_data, t.dlvy_date, t.stock_count 
 	 FROM transaction t, product p
-	 WHERE t.tran_no=#{tranNo} AND t.prod_no = p.prod_no
-		
+	 WHERE t.tran_no=#{tranNo} AND t.prod_no = p.prod_no -->
+		SELECT 
+	 tran_no, payment_option, receiver_name, receiver_phone, demailaddr, dlvy_request, tran_status_code, order_data, dlvy_date
+	 FROM transaction 
+	 WHERE tran_no=#{tranNo}
 	 </select>
 	
 	

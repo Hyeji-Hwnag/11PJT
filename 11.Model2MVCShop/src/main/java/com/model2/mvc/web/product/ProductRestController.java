@@ -218,5 +218,22 @@ public class ProductRestController {
 		//return "forward:/product/getProduct.jsp";
 		   return productService.getProduct(prodNo);
 	}
+	
+	//@RequestMapping("/checkProductDuplication.do")
+	@RequestMapping( value="json/checkProductDuplication", method=RequestMethod.POST )	
+	public boolean checkProductDuplication( HttpServletRequest request,
+			 HttpServletResponse response  ) throws Exception{
+		request.setCharacterEncoding("UTF-8");
+		String prodName = request.getParameter("prodName");
+		System.out.println("/product/checkProductDuplication : POST");
+		//Business Logic
+		boolean result=productService.checkDuplicationProduct(prodName);
+		// Model °ú View ¿¬°á
+		
+		return  result;
+	}
+	
+	
+	
 
 }

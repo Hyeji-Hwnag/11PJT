@@ -48,7 +48,7 @@
 	            url: '/v2/user/me',
 	            success: function(res) {
 	              //console.log(JSON.stringify(res));
-	              res.id += "@k";
+	              res.id += "kakao";
 	              
 	              $.ajax({
 	                  url : "/user/json/checkDuplication/"+res.id,
