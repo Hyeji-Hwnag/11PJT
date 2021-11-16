@@ -285,7 +285,7 @@ $("td.checkT:contains('∏Æ∫‰¿€º∫') ").on("click" , function() {
 		</c:if>
 			  </td>
 			  <td align="left">
-			  	<i class="glyphicon glyphicon-ok" id= "${purchase.tranNo}"></i>
+			  	<i class="glyphicon glyphicon-music" id= "${purchase.tranNo}"></i>
 			  	<input type="hidden" value="${purchase.tranNo}">
 			  	<input type="hidden" name="userId" value="${user.userId}">
 			  </td>

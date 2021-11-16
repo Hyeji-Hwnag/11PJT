@@ -540,8 +540,8 @@ $(function() {
 					
 					<td width="30"></td>
 					
-					<input type="button" id = "apibtn" value="카카오페이" />
-					<button id="check_module" type="button">아이엠포트</button>
+					<!-- <input type="button" id = "apibtn" value="카카오페이" />
+					<button id="check_module" type="button">아이엠포트</button> -->
 
 					<td width="17" height="23">
 						<img src="/images/ct_btnbg01.gif" width="17" height="23"/>

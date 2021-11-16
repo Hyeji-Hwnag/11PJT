@@ -70,7 +70,8 @@ public class UserRestController {
 	public User addUser(	@RequestBody User user,
 									HttpSession session ) throws Exception{
 	
-	
+		
+		//user.setUserId(user.getUserId().substring(0,5)+"google");
 		userService.addUser(user);
 		
 		return user;

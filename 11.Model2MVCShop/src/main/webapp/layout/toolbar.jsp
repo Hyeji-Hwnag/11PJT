@@ -10,7 +10,7 @@
 	
 	<div class="container">
 	       
-		<a class="navbar-brand" href="/index.jsp">Model2 MVC Shop</a>
+		<a class="navbar-brand" href="/index.jsp">세 모 당</a>
 		
 		<!-- toolBar Button Start //////////////////////// -->
 		<div class="navbar-header">
@@ -110,7 +110,8 @@
 </div>
 		<!-- ToolBar End /////////////////////////////////////-->
  	
-   	
+   	<meta name="google-signin-client_id" content="727326734700-pjadupjtpl0m6tdje5nomsfksla5febn.apps.googleusercontent.com">
+<script src="https://apis.google.com/js/platform.js" async defer></script>
    	<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
    	<script type="text/javascript">
    	
@@ -128,8 +129,14 @@
 		 }
 	 });
 
-
-   	
+	
+		function signOut(){
+			var auth2 = gapi.auth2.getAuthInstance();
+			auth2.signOut().then(function(){
+				console.log('User logout');
+			});
+			auth2.disconnect();
+		}
    	
    	
 		//============= logout Event  처리 =============	
@@ -139,6 +146,7 @@
 			 
 			//==> DOM Object GET 3가지 방법 ==> 1. $(tagName) : 2.(#id) : 3.$(.className)
 		 	$("a:contains('로그아웃')").on("click" , function() {
+		 		
 				$(self.location).attr("href","/user/logout");
 				//self.location = "/user/logout"
 			}); 
@@ -198,5 +206,8 @@
 				self.location = "/user/login"
 			});
 		});
+		
+	
+		
 		
 	</script>  
